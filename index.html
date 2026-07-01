@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Key Change — Free Music Learning Games</title>
+  <meta name="description" content="A free, community-built library of browser games for learning piano and music — note reading, ear training, rhythm, theory, and more.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-header__logo" href="index.html">🎹 Key Change</a>
+    <p class="site-header__tagline">Free, community-built games for learning piano and music</p>
+  </header>
+
+  <main class="gallery">
+    <section class="gallery__controls">
+      <input
+        type="search"
+        id="search-input"
+        class="search-input"
+        placeholder="Search games by name or description…"
+        aria-label="Search games"
+      >
+
+      <div class="filter-group" id="category-filters" role="group" aria-label="Filter by category">
+        <button type="button" class="filter-chip is-active" data-filter="all">All</button>
+      </div>
+
+      <div class="filter-group" id="difficulty-filters" role="group" aria-label="Filter by difficulty">
+        <button type="button" class="filter-chip is-active" data-difficulty="all">All levels</button>
+        <button type="button" class="filter-chip" data-difficulty="beginner">Beginner</button>
+        <button type="button" class="filter-chip" data-difficulty="intermediate">Intermediate</button>
+        <button type="button" class="filter-chip" data-difficulty="advanced">Advanced</button>
+      </div>
+
+      <select id="sort-select" class="sort-select" aria-label="Sort games">
+        <option value="newest">Newest first</option>
+        <option value="title">Title (A–Z)</option>
+        <option value="difficulty">Difficulty (easiest first)</option>
+      </select>
+    </section>
+
+    <p class="gallery__count" id="results-count" aria-live="polite">Loading games…</p>
+
+    <section class="gallery__grid" id="games-grid" aria-live="polite"></section>
+
+    <p class="gallery__empty" id="empty-state" hidden>
+      No games match your filters. <button type="button" id="clear-filters">Clear filters</button>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Want to contribute a game? <a href="CONTRIBUTING.md">Read the contributor guide</a> — no professional dev experience required.</p>
+  </footer>
+
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/games-data.js"></script>
+  <script src="assets/js/gallery.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scale Builder — Major Scale Construction</title>
+  <meta name="description" content="Build the major scale for a given key, one note at a time, and feel the whole-step/half-step pattern. A free music theory game.">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="back-link" href="../../index.html">&larr; Back to gallery</a>
+
+  <div class="app" id="app">
+
+    <!-- START SCREEN -->
+    <section class="screen screen--start" id="start-screen">
+      <h1 class="title">Scale Builder</h1>
+      <p class="subtitle">Build the major scale for the given key by clicking the correct next note. Every major scale follows the same Whole&ndash;Whole&ndash;Half&ndash;Whole&ndash;Whole&ndash;Whole&ndash;Half pattern &mdash; internalize it by doing, not memorizing.</p>
+
+      <div class="start-preview" aria-hidden="true">
+        <svg viewBox="0 0 220 70" class="preview-svg">
+          <line x1="10" y1="15" x2="210" y2="15" class="preview-staffline"></line>
+          <line x1="10" y1="25" x2="210" y2="25" class="preview-staffline"></line>
+          <line x1="10" y1="35" x2="210" y2="35" class="preview-staffline"></line>
+          <line x1="10" y1="45" x2="210" y2="45" class="preview-staffline"></line>
+          <line x1="10" y1="55" x2="210" y2="55" class="preview-staffline"></line>
+          <circle cx="40" cy="45" r="7" class="preview-note"></circle>
+          <circle cx="70" cy="35" r="7" class="preview-note"></circle>
+          <circle cx="100" cy="30" r="7" class="preview-note"></circle>
+          <circle cx="130" cy="25" r="7" class="preview-note"></circle>
+          <circle cx="160" cy="15" r="7" class="preview-note"></circle>
+          <circle cx="190" cy="5" r="7" class="preview-note preview-note--fade"></circle>
+        </svg>
+      </div>
+
+      <fieldset class="difficulty-select" id="difficulty-select">
+        <legend>Choose your difficulty</legend>
+        <div class="difficulty-options">
+          <button type="button" class="difficulty-option is-active" data-difficulty="easy" aria-pressed="true">
+            <span class="difficulty-name">Easy</span>
+            <span class="difficulty-detail">Natural keys &middot; C, G, D, F</span>
+          </button>
+          <button type="button" class="difficulty-option" data-difficulty="medium" aria-pressed="false">
+            <span class="difficulty-name">Medium</span>
+            <span class="difficulty-detail">Adds A, E, B&flat;, E&flat;</span>
+          </button>
+          <button type="button" class="difficulty-option" data-difficulty="hard" aria-pressed="false">
+            <span class="difficulty-name">Hard</span>
+            <span class="difficulty-detail">Full 12-key set, heavy accidentals</span>
+          </button>
+        </div>
+      </fieldset>
+
+      <button type="button" class="btn btn-start" id="start-btn">Start</button>
+
+      <p class="best-preview" id="best-preview"></p>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section class="screen screen--game" id="game-screen" hidden>
+
+      <!-- TOP STAT BAR (~12%) -->
+      <header class="stat-bar">
+        <div class="stat">
+          <span class="stat-label">Score</span>
+          <span class="stat-value" id="stat-score">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Scales</span>
+          <span class="stat-value" id="stat-scales">0/10</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Accuracy</span>
+          <span class="stat-value" id="stat-accuracy">100%</span>
+        </div>
+        <button type="button" class="btn btn--skip" id="skip-btn">Skip Scale</button>
+      </header>
+
+      <!-- PROMPT REGION (~15%) -->
+      <div class="prompt-region">
+        <h2 class="prompt-heading" id="prompt-heading">Build: C Major</h2>
+        <div class="key-sig-wrap" aria-hidden="true">
+          <svg id="key-sig-svg" viewBox="0 0 150 60" class="key-sig-svg" role="img" aria-label="Key signature reference"></svg>
+        </div>
+      </div>
+
+      <!-- SCALE RACK (~15%, above keyboard) -->
+      <div class="rack" id="rack" aria-label="Scale built so far" aria-live="polite">
+        <!-- 8 slots injected by JS -->
+      </div>
+
+      <!-- FEEDBACK STRIP -->
+      <p class="feedback-strip" id="feedback-strip" aria-live="polite"></p>
+
+      <!-- KEYBOARD REGION (~50%) -->
+      <div class="keyboard-region">
+        <button type="button" class="octave-nav octave-nav--left" id="octave-left" aria-label="Shift keyboard view left">&#10094;</button>
+        <div class="keyboard-viewport" id="keyboard-viewport">
+          <div class="keyboard" id="keyboard"></div>
+        </div>
+        <button type="button" class="octave-nav octave-nav--right" id="octave-right" aria-label="Shift keyboard view right">&#10095;</button>
+      </div>
+
+      <!-- LEGEND / BOTTOM STRIP -->
+      <div class="legend-strip">
+        <p class="legend-title">Computer keyboard mapping (shifts with the visible octave):</p>
+        <div class="legend-row" id="legend-row"></div>
+      </div>
+
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section class="screen screen--results" id="results-screen" hidden>
+      <h2 class="results-heading">Session Complete!</h2>
+      <div class="banner-best" id="banner-best" hidden>&#9733; New Best! &#9733;</div>
+
+      <div class="grade-badge" id="grade-badge">S</div>
+
+      <div class="results-grid">
+        <div class="result-stat">
+          <span class="result-value" id="result-score">0</span>
+          <span class="result-label">Score</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-accuracy">0%</span>
+          <span class="result-label">Accuracy</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-perfect">0</span>
+          <span class="result-label">Perfect Scales</span>
+        </div>
+      </div>
+
+      <p class="results-best-line" id="results-best-line"></p>
+
+      <div class="mastery-section">
+        <h3 class="mastery-heading">Keys Mastered</h3>
+        <div class="mastery-checklist" id="mastery-checklist"></div>
+      </div>
+
+      <div class="results-actions">
+        <button type="button" class="btn btn-start" id="play-again-btn">Play Again</button>
+        <a class="btn btn--secondary" href="../../index.html">Back to gallery</a>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

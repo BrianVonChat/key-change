@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interval Ears — Key Change</title>
+  <meta name="description" content="Listen to two notes and name the interval — train your ear, one leap at a time.">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="back-link" href="../../index.html">&larr; Back to gallery</a>
+
+  <main class="app" id="app">
+
+    <!-- START SCREEN -->
+    <section class="screen screen--start" id="start-screen">
+      <h1 class="title">Interval Ears</h1>
+      <p class="subtitle">Listen to the two notes, then pick the interval you heard. Train your ear to recognize the distance between notes by sound alone — no sheet music required.</p>
+
+      <fieldset class="difficulty-select" id="difficulty-select">
+        <legend>Choose your difficulty</legend>
+        <div class="difficulty-options">
+          <button type="button" class="difficulty-option is-active" data-difficulty="easy" aria-pressed="true">
+            Easy
+            <span class="difficulty-option__hint">4 intervals</span>
+          </button>
+          <button type="button" class="difficulty-option" data-difficulty="medium" aria-pressed="false">
+            Medium
+            <span class="difficulty-option__hint">8 intervals</span>
+          </button>
+          <button type="button" class="difficulty-option" data-difficulty="hard" aria-pressed="false">
+            Hard
+            <span class="difficulty-option__hint">13 intervals</span>
+          </button>
+        </div>
+      </fieldset>
+
+      <button type="button" class="btn btn--start" id="start-btn">Start</button>
+
+      <p class="best-preview" id="best-preview" aria-live="polite"></p>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section class="screen screen--game" id="game-screen" hidden>
+
+      <!-- TOP STAT BAR -->
+      <header class="stat-bar">
+        <div class="stat">
+          <span class="stat-label">Score</span>
+          <span class="stat-value" id="stat-score">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Streak</span>
+          <span class="stat-value" id="stat-streak">0</span>
+        </div>
+        <div class="stat stat--progress">
+          <span class="stat-label" id="stat-round-label">Round 1/15</span>
+          <div class="progress-track" role="progressbar" aria-label="Round progress" aria-valuemin="0" aria-valuemax="15" aria-valuenow="0">
+            <div class="progress-fill" id="round-progress-fill"></div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CENTER PLAY AREA -->
+      <div class="play-region">
+        <button type="button" class="play-btn" id="play-btn" aria-label="Play the two notes">
+          <span class="play-btn__pulse" id="play-pulse" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </span>
+          <svg class="play-btn__icon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M8 24 H20 L36 10 V54 L20 40 H8 Z" fill="currentColor"></path>
+            <path class="play-btn__wave play-btn__wave--1" d="M44 22 Q50 32 44 42" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"></path>
+            <path class="play-btn__wave play-btn__wave--2" d="M50 16 Q60 32 50 48" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <p class="play-hint" id="play-hint">Click Play or press Space to listen</p>
+        <p class="replay-counter" id="replay-counter" hidden>Replays used: <span id="replay-count">0</span></p>
+      </div>
+
+      <!-- INTERVAL ANSWER GRID -->
+      <div class="answer-grid" id="answer-grid" role="group" aria-label="Interval answers"></div>
+
+      <!-- FEEDBACK STRIP -->
+      <div class="feedback-strip" id="feedback-strip" hidden>
+        <p class="feedback-text" id="feedback-text" aria-live="polite"></p>
+        <button type="button" class="btn btn--next" id="next-btn">Next Round</button>
+      </div>
+
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section class="screen screen--results" id="results-screen" hidden>
+      <h2 class="results-heading">Session Complete!</h2>
+      <p class="results-grade" id="results-grade">S</p>
+      <div class="banner-best" id="banner-best" hidden>&#9733; New Best! &#9733;</div>
+
+      <div class="results-grid">
+        <div class="result-stat">
+          <span class="result-value" id="result-accuracy">0%</span>
+          <span class="result-label">Accuracy</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-replays">0.0</span>
+          <span class="result-label">Avg. Replays / Round</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-streak">0</span>
+          <span class="result-label">Best Streak</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-score">0</span>
+          <span class="result-label">Score</span>
+        </div>
+      </div>
+
+      <p class="results-best-line" id="results-best-line"></p>
+
+      <div class="results-actions">
+        <button type="button" class="btn btn--start" id="play-again-btn">Play Again</button>
+        <a class="btn btn--secondary" href="../../index.html">Back to gallery</a>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

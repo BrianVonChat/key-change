@@ -1,0 +1,15 @@
+{
+  "slug": "staff-sprint",
+  "title": "Staff Sprint",
+  "author": "Site Owner",
+  "authorUrl": "",
+  "description": "Race the clock to name notes on the staff before your streak breaks.",
+  "category": ["piano", "theory"],
+  "difficulty": "beginner",
+  "thumbnail": "",
+  "entry": "index.html",
+  "dateAdded": "2026-07-01",
+  "version": "1.0.0",
+  "instrumentFocus": "piano",
+  "tags": ["flashcards", "staff-reading", "sight-reading"]
+}

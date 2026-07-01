@@ -1,0 +1,15 @@
+{
+  "slug": "scale-builder",
+  "title": "Scale Builder",
+  "author": "Site Owner",
+  "authorUrl": "",
+  "description": "Construct the major scale for a given key, one note at a time, and feel the pattern.",
+  "category": ["theory", "piano"],
+  "difficulty": "intermediate",
+  "thumbnail": "",
+  "entry": "index.html",
+  "dateAdded": "2026-07-01",
+  "version": "1.0.0",
+  "instrumentFocus": "piano",
+  "tags": ["scales", "key-signatures", "major-scale"]
+}

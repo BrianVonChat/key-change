@@ -1,0 +1,110 @@
+[
+  {
+    "slug": "beat-keeper",
+    "title": "Beat Keeper",
+    "author": "Site Owner",
+    "authorUrl": "",
+    "description": "Tap in time with the beat, build your combo multiplier, and lock into the groove.",
+    "category": [
+      "rhythm"
+    ],
+    "difficulty": "beginner",
+    "thumbnail": "",
+    "entry": "games/beat-keeper/index.html",
+    "dateAdded": "2026-07-01",
+    "version": "1.0.0",
+    "instrumentFocus": "any",
+    "tags": [
+      "tapping",
+      "tempo",
+      "timing"
+    ]
+  },
+  {
+    "slug": "interval-ears",
+    "title": "Interval Ears",
+    "author": "Site Owner",
+    "authorUrl": "",
+    "description": "Listen to two notes and name the interval — train your ear, one leap at a time.",
+    "category": [
+      "ear-training",
+      "theory"
+    ],
+    "difficulty": "beginner",
+    "thumbnail": "",
+    "entry": "games/interval-ears/index.html",
+    "dateAdded": "2026-07-01",
+    "version": "1.0.0",
+    "instrumentFocus": "piano",
+    "tags": [
+      "intervals",
+      "listening",
+      "solfege"
+    ]
+  },
+  {
+    "slug": "key-quest",
+    "title": "Key Quest",
+    "author": "Site Owner",
+    "authorUrl": "",
+    "description": "Find the named note on the keyboard before time runs out and build your combo.",
+    "category": [
+      "keyboard-geography",
+      "piano"
+    ],
+    "difficulty": "beginner",
+    "thumbnail": "",
+    "entry": "games/key-quest/index.html",
+    "dateAdded": "2026-07-01",
+    "version": "1.0.0",
+    "instrumentFocus": "piano",
+    "tags": [
+      "keyboard",
+      "note-finding"
+    ]
+  },
+  {
+    "slug": "scale-builder",
+    "title": "Scale Builder",
+    "author": "Site Owner",
+    "authorUrl": "",
+    "description": "Construct the major scale for a given key, one note at a time, and feel the pattern.",
+    "category": [
+      "theory",
+      "piano"
+    ],
+    "difficulty": "intermediate",
+    "thumbnail": "",
+    "entry": "games/scale-builder/index.html",
+    "dateAdded": "2026-07-01",
+    "version": "1.0.0",
+    "instrumentFocus": "piano",
+    "tags": [
+      "scales",
+      "key-signatures",
+      "major-scale"
+    ]
+  },
+  {
+    "slug": "staff-sprint",
+    "title": "Staff Sprint",
+    "author": "Site Owner",
+    "authorUrl": "",
+    "description": "Race the clock to name notes on the staff before your streak breaks.",
+    "category": [
+      "piano",
+      "theory"
+    ],
+    "difficulty": "beginner",
+    "thumbnail": "",
+    "entry": "games/staff-sprint/index.html",
+    "dateAdded": "2026-07-01",
+    "version": "1.0.0",
+    "instrumentFocus": "piano",
+    "tags": [
+      "flashcards",
+      "staff-reading",
+      "sight-reading"
+    ]
+  }
+]

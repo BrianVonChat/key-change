@@ -1,0 +1,15 @@
+{
+  "slug": "key-quest",
+  "title": "Key Quest",
+  "author": "Site Owner",
+  "authorUrl": "",
+  "description": "Find the named note on the keyboard before time runs out and build your combo.",
+  "category": ["keyboard-geography", "piano"],
+  "difficulty": "beginner",
+  "thumbnail": "",
+  "entry": "index.html",
+  "dateAdded": "2026-07-01",
+  "version": "1.0.0",
+  "instrumentFocus": "piano",
+  "tags": ["keyboard", "note-finding"]
+}

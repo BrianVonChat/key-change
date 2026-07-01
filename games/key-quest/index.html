@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Key Quest — Piano Keyboard Geography</title>
+  <meta name="description" content="Find the named note on the keyboard before time runs out and build your combo. A free piano keyboard geography game.">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="back-link" href="../../index.html">&larr; Back to gallery</a>
+
+  <div class="app" id="app">
+
+    <!-- START SCREEN -->
+    <section class="screen screen--start" id="start-screen">
+      <h1 class="title">Key Quest</h1>
+      <p class="subtitle">A target note lights up above the keyboard — find and press the matching key before it fades, and chain combos across the keyboard range.</p>
+
+      <div class="start-preview" id="start-preview" aria-hidden="true">
+        <!-- mini keyboard preview rendered by JS -->
+      </div>
+
+      <fieldset class="range-select" id="range-select">
+        <legend>Choose your range</legend>
+        <div class="range-options">
+          <button type="button" class="range-option is-active" data-range="1" aria-pressed="true">1 Octave</button>
+          <button type="button" class="range-option" data-range="2" aria-pressed="false">2 Octaves</button>
+          <button type="button" class="range-option" data-range="full" aria-pressed="false">Full Keyboard</button>
+        </div>
+      </fieldset>
+
+      <button type="button" class="btn btn-start" id="start-btn">Start Quest</button>
+
+      <p class="best-preview" id="best-preview"></p>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section class="screen screen--game" id="game-screen" hidden>
+
+      <!-- TOP STAT BAR -->
+      <header class="stat-bar">
+        <div class="stat">
+          <span class="stat-label">Score</span>
+          <span class="stat-value" id="stat-score">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Combo</span>
+          <span class="stat-value" id="stat-combo">0</span>
+        </div>
+        <div class="stat stat--progress">
+          <span class="stat-label" id="stat-round-label">Round 1/20</span>
+          <div class="progress-track" role="progressbar" aria-label="Round progress" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0">
+            <div class="progress-fill" id="round-progress-fill"></div>
+          </div>
+        </div>
+        <button type="button" class="btn btn--hint" id="hint-btn">Hint &times;3</button>
+        <button type="button" class="btn btn--skip" id="skip-btn">Skip round</button>
+      </header>
+
+      <!-- CALLOUT REGION -->
+      <div class="callout-region">
+        <div class="callout-card" id="callout-card">
+          <span class="callout-find">Find:</span>
+          <span class="callout-target" id="callout-target">C</span>
+        </div>
+        <div class="time-budget-track">
+          <div class="time-budget-fill" id="time-budget-fill"></div>
+        </div>
+        <p class="round-message" id="round-message" aria-live="polite"></p>
+      </div>
+
+      <!-- KEYBOARD REGION -->
+      <div class="keyboard-region">
+        <button type="button" class="octave-nav octave-nav--left" id="octave-left" aria-label="Shift keyboard view left" hidden>&#10094;</button>
+        <div class="keyboard-viewport" id="keyboard-viewport">
+          <div class="keyboard" id="keyboard"></div>
+        </div>
+        <button type="button" class="octave-nav octave-nav--right" id="octave-right" aria-label="Shift keyboard view right" hidden>&#10095;</button>
+      </div>
+
+      <!-- LEGEND / BOTTOM STRIP -->
+      <div class="legend-strip">
+        <p class="legend-title">Computer keyboard mapping (shifts with the visible octave):</p>
+        <div class="legend-row" id="legend-row"></div>
+        <p class="legend-hint">Left / Right arrows shift the visible octave window when it doesn't all fit.</p>
+      </div>
+
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section class="screen screen--results" id="results-screen" hidden>
+      <h2 class="results-heading" id="results-heading">Quest Complete!</h2>
+      <div class="banner-best" id="banner-best" hidden>New Best!</div>
+
+      <div class="results-grid">
+        <div class="result-stat">
+          <span class="result-value" id="result-accuracy">0%</span>
+          <span class="result-label">Accuracy</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-combo">0</span>
+          <span class="result-label">Best Combo</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-time">0.0s</span>
+          <span class="result-label">Avg. Find Time</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-score">0</span>
+          <span class="result-label">Score</span>
+        </div>
+      </div>
+
+      <p class="results-best-line" id="results-best-line"></p>
+
+      <div class="results-actions">
+        <button type="button" class="btn btn-start" id="play-again-btn">Play Again</button>
+        <a class="btn btn--secondary" href="../../index.html">Back to gallery</a>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

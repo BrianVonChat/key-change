@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beat Keeper — Rhythm Training</title>
+  <meta name="description" content="Tap in time with the beat, build your combo multiplier, and lock into the groove. A free rhythm training game.">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="back-link" href="../../index.html">&larr; Back to gallery</a>
+
+  <div class="app" id="app">
+
+    <!-- START SCREEN -->
+    <section class="screen screen--start" id="start-screen">
+      <h1 class="title">Beat Keeper</h1>
+      <p class="subtitle">Tap along with the scrolling rhythm track exactly on the beat. Nail the pocket to build your combo multiplier &mdash; it's a metronome that fights back.</p>
+
+      <div class="start-preview" aria-hidden="true">
+        <svg viewBox="0 0 400 70" class="preview-svg">
+          <line x1="70" y1="10" x2="70" y2="60" class="preview-hitline"></line>
+          <circle cx="70" cy="35" r="14" class="preview-ring"></circle>
+          <circle cx="140" cy="35" r="11" class="preview-note"></circle>
+          <circle cx="200" cy="35" r="11" class="preview-note"></circle>
+          <circle cx="245" cy="35" r="9" class="preview-rest"></circle>
+          <circle cx="290" cy="35" r="11" class="preview-note"></circle>
+          <circle cx="345" cy="35" r="11" class="preview-note"></circle>
+        </svg>
+      </div>
+
+      <p class="tempo-indicator" id="tempo-indicator">Tempo: 70&ndash;100 BPM</p>
+
+      <fieldset class="difficulty-select" id="difficulty-select">
+        <legend>Choose your difficulty</legend>
+        <div class="difficulty-options">
+          <button type="button" class="difficulty-option is-active" data-difficulty="easy" aria-pressed="true">
+            <span class="difficulty-name">Easy</span>
+            <span class="difficulty-detail">Quarter notes &middot; 70&ndash;100 BPM</span>
+          </button>
+          <button type="button" class="difficulty-option" data-difficulty="medium" aria-pressed="false">
+            <span class="difficulty-name">Medium</span>
+            <span class="difficulty-detail">Adds eighth notes &middot; 85&ndash;110 BPM</span>
+          </button>
+          <button type="button" class="difficulty-option" data-difficulty="hard" aria-pressed="false">
+            <span class="difficulty-name">Hard</span>
+            <span class="difficulty-detail">Syncopation &amp; tempo ramps &middot; 100&ndash;120 BPM</span>
+          </button>
+        </div>
+      </fieldset>
+
+      <button type="button" class="btn btn-start" id="start-btn">Start</button>
+
+      <p class="best-preview" id="best-preview"></p>
+    </section>
+
+    <!-- COUNT-IN SCREEN -->
+    <section class="screen screen--countin" id="countin-screen" hidden>
+      <div class="countin-display">
+        <span class="countin-number" id="countin-number">1</span>
+        <p class="countin-label">Get ready&hellip;</p>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section class="screen screen--game" id="game-screen" hidden>
+
+      <!-- TOP STAT BAR -->
+      <header class="stat-bar">
+        <div class="stat">
+          <span class="stat-label">Score</span>
+          <span class="stat-value" id="stat-score">0</span>
+        </div>
+        <div class="combo-pill" id="combo-pill">
+          <span class="combo-value" id="combo-value">x1</span>
+        </div>
+        <div class="stat stat--right">
+          <span class="stat-label">Accuracy</span>
+          <span class="stat-value" id="stat-accuracy">100%</span>
+        </div>
+      </header>
+
+      <!-- HIGHWAY -->
+      <div class="highway-region">
+        <canvas id="highway-canvas"></canvas>
+      </div>
+
+      <!-- PROGRESS STRIP -->
+      <div class="progress-strip">
+        <span class="progress-label" id="progress-label">Measure 1 / 8</span>
+        <div class="progress-track" role="progressbar" aria-label="Pattern progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- TAP ZONE -->
+      <button type="button" class="tap-zone" id="tap-zone">
+        <span class="tap-zone__label">TAP</span>
+        <span class="tap-zone__hint">Press <kbd>Space</kbd> or <kbd>Enter</kbd>, or click here</span>
+      </button>
+
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section class="screen screen--results" id="results-screen" hidden>
+      <h2 class="results-heading">Pattern Complete!</h2>
+      <div class="banner-best" id="banner-best" hidden>&#9733; New Best! &#9733;</div>
+
+      <div class="grade-badge" id="grade-badge">S</div>
+
+      <div class="results-grid">
+        <div class="result-stat">
+          <span class="result-value" id="result-score">0</span>
+          <span class="result-label">Score</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-accuracy">0%</span>
+          <span class="result-label">Accuracy</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-combo">0</span>
+          <span class="result-label">Max Combo</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-perfect">0</span>
+          <span class="result-label">Perfect</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-good">0</span>
+          <span class="result-label">Good</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-miss">0</span>
+          <span class="result-label">Miss</span>
+        </div>
+      </div>
+
+      <p class="results-best-line" id="results-best-line"></p>
+
+      <div class="results-actions">
+        <button type="button" class="btn btn-start" id="play-again-btn">Play Again</button>
+        <a class="btn btn--secondary" href="../../index.html">Back to gallery</a>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

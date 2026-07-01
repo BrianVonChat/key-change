@@ -1,0 +1,15 @@
+{
+  "slug": "interval-ears",
+  "title": "Interval Ears",
+  "author": "Site Owner",
+  "authorUrl": "",
+  "description": "Listen to two notes and name the interval — train your ear, one leap at a time.",
+  "category": ["ear-training", "theory"],
+  "difficulty": "beginner",
+  "thumbnail": "",
+  "entry": "index.html",
+  "dateAdded": "2026-07-01",
+  "version": "1.0.0",
+  "instrumentFocus": "piano",
+  "tags": ["intervals", "listening", "solfege"]
+}

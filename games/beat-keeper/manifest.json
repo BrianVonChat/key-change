@@ -1,0 +1,15 @@
+{
+  "slug": "beat-keeper",
+  "title": "Beat Keeper",
+  "author": "Site Owner",
+  "authorUrl": "",
+  "description": "Tap in time with the beat, build your combo multiplier, and lock into the groove.",
+  "category": ["rhythm"],
+  "difficulty": "beginner",
+  "thumbnail": "",
+  "entry": "index.html",
+  "dateAdded": "2026-07-01",
+  "version": "1.0.0",
+  "instrumentFocus": "any",
+  "tags": ["tapping", "tempo", "timing"]
+}
