@@ -6,9 +6,13 @@ totally fine. Here's the process.
 
 ## 1. Fork and clone the repo
 
-*(Instructions here once the project has a GitHub home — for now, if you're
-working directly with the project owner, just let them know what you're
-building.)*
+Fork [BrianVonChat/key-change](https://github.com/BrianVonChat/key-change) on
+GitHub, then clone your fork:
+
+```
+git clone https://github.com/<your-username>/key-change.git
+cd key-change
+```
 
 ## 2. Create your game folder
 
