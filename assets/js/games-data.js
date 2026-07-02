@@ -14,7 +14,7 @@ function labelForCategory(id) {
 }
 
 async function loadGames() {
-  const res = await fetch('games.json');
+  const res = await fetch('games.json', { cache: 'no-cache' });
   if (!res.ok) throw new Error(`Failed to load games.json: ${res.status}`);
   return res.json();
 }

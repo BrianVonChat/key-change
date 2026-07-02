@@ -21,6 +21,29 @@
     ]
   },
   {
+    "slug": "degree-detective",
+    "title": "Degree Detective",
+    "author": "Site Owner",
+    "authorUrl": "",
+    "description": "A chord sets the key, a mystery note rings on top — name its scale degree by ear, from the 2 to the ♭6.",
+    "category": [
+      "ear-training",
+      "theory"
+    ],
+    "difficulty": "beginner",
+    "thumbnail": "",
+    "entry": "games/degree-detective/index.html",
+    "dateAdded": "2026-07-02",
+    "version": "1.0.0",
+    "instrumentFocus": "any",
+    "tags": [
+      "scale-degrees",
+      "functional-ear-training",
+      "solfege",
+      "harmony"
+    ]
+  },
+  {
     "slug": "interval-ears",
     "title": "Interval Ears",
     "author": "Site Owner",

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Degree Detective — Key Change</title>
+  <meta name="description" content="A chord sets the key, a mystery note rings on top — name its scale degree by ear and learn how every note feels inside a key.">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="back-link" href="../../index.html">&larr; Back to gallery</a>
+
+  <main class="app" id="app">
+
+    <!-- START SCREEN -->
+    <section class="screen screen--start" id="start-screen">
+      <h1 class="title">Degree Detective</h1>
+      <p class="subtitle">A chord establishes the key. A mystery note plays on top. Name its scale degree — train your ear to hear how notes <em>feel</em> inside a key.</p>
+
+      <fieldset class="picker" id="difficulty-select">
+        <legend>Choose your difficulty</legend>
+        <div class="picker-options">
+          <button type="button" class="select-pill is-active" data-difficulty="easy" aria-pressed="true">
+            Easy
+            <span class="select-pill__hint">One key per session &middot; degrees 1&ndash;7</span>
+          </button>
+          <button type="button" class="select-pill" data-difficulty="medium" aria-pressed="false">
+            Medium
+            <span class="select-pill__hint">Key changes each round &middot; adds ♭2 ♭3 ♯4 ♭6 ♭7</span>
+          </button>
+          <button type="button" class="select-pill" data-difficulty="hard" aria-pressed="false">
+            Hard
+            <span class="select-pill__hint">Any key, any degree &middot; two octaves</span>
+          </button>
+        </div>
+      </fieldset>
+
+      <fieldset class="picker" id="mode-select">
+        <legend>Harmonic context</legend>
+        <div class="picker-options">
+          <button type="button" class="select-pill is-active" data-mode="chord" aria-pressed="true">
+            Chord
+            <span class="select-pill__hint">Sustained tonic chord</span>
+          </button>
+          <button type="button" class="select-pill" data-mode="cadence" aria-pressed="false">
+            Cadence
+            <span class="select-pill__hint">I&ndash;IV&ndash;V&ndash;I &middot; stronger sense of key</span>
+          </button>
+        </div>
+      </fieldset>
+
+      <p class="best-preview" id="best-preview" aria-live="polite"></p>
+
+      <button type="button" class="btn btn--start" id="start-btn">Start</button>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section class="screen screen--game" id="game-screen" hidden>
+
+      <!-- TOP STAT BAR -->
+      <header class="stat-bar">
+        <div class="stat">
+          <span class="stat-label">Score</span>
+          <span class="stat-value" id="stat-score">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Streak</span>
+          <span class="stat-value" id="stat-streak">0</span>
+        </div>
+        <div class="stat stat--progress">
+          <span class="stat-label" id="stat-round-label">Round 1/15</span>
+          <div class="progress-track" role="progressbar" aria-label="Round progress" aria-valuemin="0" aria-valuemax="15" aria-valuenow="0">
+            <div class="progress-fill" id="round-progress-fill"></div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CENTER PLAY AREA -->
+      <div class="play-region">
+        <div class="key-card">
+          <span class="key-card__label">This round</span>
+          <strong class="key-card__value" id="key-name">Key of C major</strong>
+        </div>
+
+        <button type="button" class="play-btn" id="play-btn" aria-label="Play the key context and the mystery note">
+          <span class="play-btn__pulse" id="play-pulse" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </span>
+          <svg class="play-btn__icon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M8 24 H20 L36 10 V54 L20 40 H8 Z" fill="currentColor"></path>
+            <path class="play-btn__wave play-btn__wave--1" d="M44 22 Q50 32 44 42" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"></path>
+            <path class="play-btn__wave play-btn__wave--2" d="M50 16 Q60 32 50 48" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <p class="play-hint" id="play-hint">Click Play or press Space to listen</p>
+        <p class="replay-counter" id="replay-counter" hidden>Replays used: <span id="replay-count">0</span></p>
+      </div>
+
+      <!-- DEGREE ANSWER GRID (piano geometry, built by game.js) -->
+      <div class="degree-grid degree-grid--full" id="degree-grid" role="group" aria-label="Scale degree answers"></div>
+      <p class="hotkey-legend" id="hotkey-legend"></p>
+
+      <!-- FEEDBACK STRIP -->
+      <div class="feedback-strip" id="feedback-strip" hidden>
+        <p class="feedback-text" id="feedback-text" aria-live="polite"></p>
+        <button type="button" class="btn btn--next" id="next-btn">Next round</button>
+      </div>
+
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section class="screen screen--results" id="results-screen" hidden>
+      <h2 class="results-heading">Session complete!</h2>
+      <p class="results-grade" id="results-grade">S</p>
+      <div class="banner-best" id="banner-best" hidden>&#9733; New best! &#9733;</div>
+
+      <div class="results-grid">
+        <div class="result-stat">
+          <span class="result-value" id="result-accuracy">0%</span>
+          <span class="result-label">Accuracy</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-replays">0.0</span>
+          <span class="result-label">Avg. replays / round</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-streak">0</span>
+          <span class="result-label">Best streak</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-value" id="result-score">0</span>
+          <span class="result-label">Score</span>
+        </div>
+      </div>
+
+      <p class="results-best-line" id="results-best-line"></p>
+
+      <div class="results-actions">
+        <button type="button" class="btn btn--start" id="play-again-btn">Play again</button>
+        <a class="btn btn--secondary" href="../../index.html">Back to gallery</a>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
