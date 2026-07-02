@@ -3,6 +3,47 @@
     "C": "context-C.m4a"
   },
   "cadences": {
-    "C": { "file": "cadence-C.m4a", "noteAt": 5.2 }
+    "C": {
+      "file": "cadence-C.m4a",
+      "noteAt": 5.2
+    }
+  },
+  "notes": {
+    "C3": "note-C3.m4a",
+    "Db3": "note-Db3.m4a",
+    "D3": "note-D3.m4a",
+    "Eb3": "note-Eb3.m4a",
+    "E3": "note-E3.m4a",
+    "F3": "note-F3.m4a",
+    "Gb3": "note-Gb3.m4a",
+    "G3": "note-G3.m4a",
+    "Ab3": "note-Ab3.m4a",
+    "A3": "note-A3.m4a",
+    "Bb3": "note-Bb3.m4a",
+    "B3": "note-B3.m4a",
+    "C4": "note-C4.m4a",
+    "Db4": "note-Db4.m4a",
+    "D4": "note-D4.m4a",
+    "Eb4": "note-Eb4.m4a",
+    "E4": "note-E4.m4a",
+    "F4": "note-F4.m4a",
+    "Gb4": "note-Gb4.m4a",
+    "G4": "note-G4.m4a",
+    "Ab4": "note-Ab4.m4a",
+    "A4": "note-A4.m4a",
+    "Bb4": "note-Bb4.m4a",
+    "B4": "note-B4.m4a",
+    "C5": "note-C5.m4a",
+    "Db5": "note-Db5.m4a",
+    "D5": "note-D5.m4a",
+    "Eb5": "note-Eb5.m4a",
+    "E5": "note-E5.m4a",
+    "F5": "note-F5.m4a",
+    "Gb5": "note-Gb5.m4a",
+    "G5": "note-G5.m4a",
+    "Ab5": "note-Ab5.m4a",
+    "A5": "note-A5.m4a",
+    "Bb5": "note-Bb5.m4a",
+    "B5": "note-B5.m4a"
   }
 }
