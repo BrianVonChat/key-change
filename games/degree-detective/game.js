@@ -57,6 +57,20 @@
     '7':  [11, 12],
   };
 
+  // Test/audition hook: ?key=C (or Db, Eb, Gb, Ab, Bb...) locks every round to
+  // one key — for listening to a specific key's recordings without replaying
+  // sessions until it comes up. Not a player-facing feature; leaves gameplay
+  // untouched when absent.
+  const FORCED_KEY = (function () {
+    const m = /[?&]key=([A-Ga-g]b?)(?:&|$)/.exec(window.location.search);
+    if (!m) return null;
+    const want = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase();
+    for (let i = 0; i < KEYS.length; i++) {
+      if (KEYS[i].file === want) return KEYS[i];
+    }
+    return null;
+  })();
+
   const DEGREE_BY_ID = {};
   DEGREES.forEach(function (d) { DEGREE_BY_ID[d.id] = d; });
 
@@ -738,7 +752,7 @@
     state.lastDegreeId = null;
     // Easy anchors one random key for the whole session (random per session,
     // so absolute pitches can't be memorized across sessions).
-    state.sessionKey = KEYS[Math.floor(Math.random() * KEYS.length)];
+    state.sessionKey = FORCED_KEY || KEYS[Math.floor(Math.random() * KEYS.length)];
 
     buildDegreeGrid();
     showScreen(gameScreen);
@@ -788,7 +802,9 @@
     state.answered = false;
 
     // Key: Easy keeps the session anchor; Medium/Hard change every round.
-    if (state.difficulty === 'easy') {
+    if (FORCED_KEY) {
+      state.currentKey = FORCED_KEY; // ?key= test hook: every round, every difficulty
+    } else if (state.difficulty === 'easy') {
       state.currentKey = state.sessionKey;
     } else {
       state.currentKey = drawNoRepeat(KEYS, state.lastKeyName, function (k) { return k.name; });

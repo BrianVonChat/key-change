@@ -66,6 +66,14 @@ Create an `audio/` folder next to this file, containing `manifest.json`:
 - Format: WAV, or MP3 at 192 kbps or higher.
 - Keep loudness roughly consistent across keys so no key jumps out.
 
+## Auditioning a specific key
+
+Append `?key=C` (or `Db`, `Eb`, `Gb`, `Ab`, `Bb`, any of the 12 flat-spelled
+names) to the game URL and every round locks to that key, on every difficulty —
+so you can listen to one key's recordings without replaying sessions until it
+comes up. Players never see this; without the parameter the game behaves
+normally.
+
 ## Timing tip
 
 Chord files: let the chord ring from the very start of the file — the mystery note

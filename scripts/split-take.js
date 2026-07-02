@@ -333,8 +333,12 @@ function onsetIn(mono, startSample, endSample) {
   return startSample;
 }
 
-// Chord onsets INSIDE a segment (cadences): frame-energy jumps, ≥0.28s apart.
-function internalOnsets(mono, sr, startSample, endSample) {
+// Chord/note onsets INSIDE a range: frame-energy jumps, ≥0.28s apart.
+// opts.jumpRatio (default 2.2) is the energy-jump sensitivity — a lower
+// ratio hears an attack landing on top of a still-ringing previous note.
+function internalOnsets(mono, sr, startSample, endSample, opts) {
+  const jumpRatio = (opts && opts.jumpRatio) || 2.2;
+  const floorFrac = (opts && opts.floorFrac) || 0.12;
   const lead = Math.max(0, startSample - Math.floor(0.2 * sr)); // include silence before chord 1
   const slice = mono.subarray(lead, endSample);
   const env = frameEnvelope(slice, sr);
@@ -344,7 +348,7 @@ function internalOnsets(mono, sr, startSample, endSample) {
   let last = -Infinity;
   for (let i = 2; i < e.length; i++) {
     const prev = Math.max(e[i - 2], e[i - 1], 1e-6);
-    if (e[i] > 0.12 * peak && e[i] / prev > 2.2 && (i * env.flen - last) > 0.28 * sr) {
+    if (e[i] > floorFrac * peak && e[i] / prev > jumpRatio && (i * env.flen - last) > 0.28 * sr) {
       onsets.push(i * env.flen);
       last = i * env.flen;
     }
@@ -461,10 +465,67 @@ console.log('Parsed ' + path.basename(args.input) + ': ' + sr + ' Hz, ' +
   parsed.fmt.channels + ' ch, ' + parsed.fmt.bitsPerSample + '-bit, ' +
   (parsed.frames / sr).toFixed(1) + 's');
 
-const env = frameEnvelope(mono, sr);
-const segments = findSegments(env, env.flen).map(function (s) {
-  return { startSample: s.startSample, endSample: Math.min(s.endSample, mono.length) };
-});
+// Notes-type takes split at note ONSETS, not silences: single notes have a
+// sharp attack every time, but the gaps between them don't survive real
+// playing — pacing tightens as a take settles in, and pedal ring fills
+// whatever gap remains. (Silence still segments contexts/cadences, where
+// internal chord changes must NOT split an item.)
+let segments;
+if (args.type === 'notes') {
+  let onsets = internalOnsets(mono, sr, 0, mono.length).filter(function (o, i, all) {
+    return i === 0 || o - all[i - 1] >= Math.floor(0.8 * sr); // notes come slower than 0.8s
+  });
+  // Rescue pass: a note struck over the previous note's ring makes a gentle
+  // energy jump the first pass can miss — visible as a segment much longer
+  // than its neighbors. Re-scan only those stretches with higher sensitivity.
+  if (onsets.length < NOTE_RUN.length && onsets.length > 2) {
+    const gaps = onsets.slice(1).map(function (o, i) { return o - onsets[i]; }).sort(function (a, b) { return a - b; });
+    const medianGap = gaps[Math.floor(gaps.length / 2)];
+    const rescued = [];
+    onsets.forEach(function (o, i) {
+      rescued.push(o);
+      const end = i + 1 < onsets.length ? onsets[i + 1] : Math.min(o + Math.floor(4 * sr), mono.length);
+      if (end - o > 1.6 * medianGap) {
+        internalOnsets(mono, sr, o + Math.floor(0.4 * sr), end - Math.floor(0.2 * sr), { jumpRatio: 1.45, floorFrac: 0.08 })
+          .forEach(function (extra) {
+            if (extra - o >= Math.floor(0.8 * sr) && end - extra >= Math.floor(0.5 * sr)) rescued.push(extra);
+          });
+      }
+    });
+    onsets = rescued.sort(function (a, b) { return a - b; }).filter(function (o, i, all) {
+      return i === 0 || o - all[i - 1] >= Math.floor(0.6 * sr);
+    });
+  }
+  // End each note at the TROUGH before the next attack — the quietest 5ms in
+  // the window leading up to the next onset. Onset estimates run a frame or
+  // two late (energy jumps are detected after the attack has begun), so any
+  // fixed "N ms before the onset" cut can land after the next hammer strike
+  // and leak its attack into this note's tail. The trough can't.
+  function troughBefore(nextOnset) {
+    const hop = Math.floor(0.005 * sr);
+    const from = Math.max(0, nextOnset - Math.floor(0.35 * sr));
+    const to = nextOnset - Math.floor(0.01 * sr);
+    let best = to, bestRms = Infinity;
+    for (let s = from; s + hop <= to; s += hop) {
+      let sum = 0;
+      for (let j = 0; j < hop; j++) sum += mono[s + j] * mono[s + j];
+      const rms = Math.sqrt(sum / hop);
+      if (rms < bestRms) { bestRms = rms; best = s; }
+    }
+    return best;
+  }
+  segments = onsets.map(function (o, i) {
+    const end = i + 1 < onsets.length
+      ? troughBefore(onsets[i + 1])
+      : Math.min(o + Math.floor(4 * sr), mono.length);
+    return { startSample: Math.max(0, o - Math.floor(0.02 * sr)), endSample: end };
+  });
+} else {
+  const env = frameEnvelope(mono, sr);
+  segments = findSegments(env, env.flen).map(function (s) {
+    return { startSample: s.startSample, endSample: Math.min(s.endSample, mono.length) };
+  });
+}
 
 // Expected items
 let expected; // [{ name, ... }] per item, or null entries in mismatch mode
@@ -500,7 +561,12 @@ const results = [];
 segments.forEach(function (seg, idx) {
   const onset = onsetIn(mono, seg.startSample, seg.endSample);
   const outStart = Math.max(0, onset - Math.floor(PRE_ROLL_SEC * sr));
-  const outEnd = Math.min(mono.length, seg.endSample + Math.floor(TAIL_PAD_SEC * sr));
+  // Silence-split segments (contexts/cadences) end where energy dropped below
+  // the noise floor, so padding restores the decay the threshold clipped.
+  // Onset-split segments (notes) already end at the trough before the next
+  // attack — padding them would leak that attack into this file's tail.
+  const tailPad = args.type === 'notes' ? 0 : Math.floor(TAIL_PAD_SEC * sr);
+  const outEnd = Math.min(mono.length, seg.endSample + tailPad);
   const chans = extractChannels(parsed, outStart, outEnd);
   const fadeIn = Math.floor(FADE_IN_SEC * sr), fadeOut = Math.floor(FADE_OUT_SEC * sr);
   for (let c = 0; c < chans.length; c++) {
