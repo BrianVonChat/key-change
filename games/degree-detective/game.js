@@ -367,7 +367,11 @@
       attack: 0.05, release: 0.3, level: 0.6, // soft re-strike
     });
     path.forEach(function (semis, i) {
-      playTone(ctx, masterGain, freq(tonicSemis + semis), when + 0.35 + i * 0.16, 0.24, 'triangle', 0.18);
+      // Walk steps land 160ms apart; recorded notes get a short hold + release
+      // so the walk stays articulate (a little natural overlap, no pileup).
+      playPitch(ctx, tonicSemis + semis, when + 0.35 + i * 0.16, {
+        synthDur: 0.24, synthPeak: 0.18, recPeak: 0.75, recHold: 0.45,
+      });
     });
     return chordTotal;
   }
@@ -377,8 +381,11 @@
   function playComparison(ctx, tonicSemis, correctSemis, chosenSemis, when) {
     const total = 3.2;
     scheduleChord(ctx, tonicSemis, CHORD_OFFSETS, CHORD_GAINS, when, total, { attack: 0.05, release: 0.3 });
-    playTone(ctx, masterGain, freq(tonicSemis + correctSemis), when + 0.55, 0.9, 'triangle', 0.22);
-    playTone(ctx, masterGain, freq(tonicSemis + chosenSemis), when + 1.6, 0.9, 'triangle', 0.22);
+    // Recorded notes hold ~0.9s (matching the synth length) then release, so
+    // the "tiny gap" between the two stays audible.
+    const noteOpts = { synthDur: 0.9, synthPeak: 0.22, recPeak: 0.9, recHold: 0.9 };
+    playPitch(ctx, tonicSemis + correctSemis, when + 0.55, noteOpts);
+    playPitch(ctx, tonicSemis + chosenSemis, when + 1.6, noteOpts);
     return total;
   }
 
@@ -387,8 +394,8 @@
      ======================================================================= */
 
   const recorded = {
-    manifest: null, // { contexts: {C: "file.mp3", ...}, cadences: {...} } or null
-    cache: {},      // "<mode>:<keyFile>" -> { status: 'loading'|'ready'|'failed', buffer }
+    manifest: null, // { contexts: {...}, cadences: {...}, notes: {...} } or null
+    cache: {},      // fileName -> { status: 'loading'|'ready'|'failed', buffer }
   };
 
   function initRecordedManifest() {
@@ -410,23 +417,48 @@
     }
   }
 
-  // Lazily fetch + decode the buffer for a key/mode the first time a round
-  // needs it. Never blocks playback: synth is used until the buffer is ready.
-  function prefetchBuffer(keyFile, mode) {
-    if (!recorded.manifest || !audioCtx) return;
+  // A contexts/cadences entry is a filename string, an object
+  // { file, noteAt }, or an ARRAY of either — several recorded variants of
+  // the same harmony (root position, inversions, voicings, broken chords).
+  // noteAt pins when the mystery note enters, so cadences can be played at
+  // any natural tempo rather than to a fixed proportion of the file.
+  function normalizeVariant(spec) {
+    if (typeof spec === 'string') return { file: spec, noteAt: null };
+    if (spec && typeof spec === 'object' && typeof spec.file === 'string') {
+      return { file: spec.file, noteAt: typeof spec.noteAt === 'number' ? spec.noteAt : null };
+    }
+    return null;
+  }
+
+  function contextVariantsFor(keyFile, mode) {
+    if (!recorded.manifest) return [];
     const table = mode === 'cadence' ? recorded.manifest.cadences : recorded.manifest.contexts;
-    if (!table || !table[keyFile]) return;
-    // Entries are either "file.m4a" or { file: "file.m4a", noteAt: seconds } —
-    // noteAt pins when the mystery note enters, so cadences can be played at
-    // any natural tempo rather than to a fixed proportion of the file.
-    const spec = table[keyFile];
-    const fileName = typeof spec === 'string' ? spec : spec && spec.file;
-    if (!fileName) return;
-    const noteAt = (spec && typeof spec === 'object' && typeof spec.noteAt === 'number') ? spec.noteAt : null;
-    const cacheKey = mode + ':' + keyFile;
-    if (recorded.cache[cacheKey]) return;
-    const entry = { status: 'loading', buffer: null, noteAt: noteAt };
-    recorded.cache[cacheKey] = entry;
+    const raw = table && table[keyFile];
+    if (!raw) return [];
+    const list = Array.isArray(raw) ? raw : [raw];
+    return list.map(normalizeVariant).filter(function (v) { return v !== null; });
+  }
+
+  // Pick ONE variant for the current round and stick with it: a replay must
+  // re-present the identical stimulus (re-rolling mid-round would change the
+  // very thing the player is re-listening for). The next round rolls fresh —
+  // uniform random across the entry's variants.
+  function chooseRoundVariant() {
+    if (state.roundVariant) return state.roundVariant;
+    const variants = contextVariantsFor(state.currentKey.file, state.contextMode);
+    if (variants.length === 0) return null; // nothing listed (yet) — synth round
+    state.roundVariant = variants[Math.floor(Math.random() * variants.length)];
+    prefetchFile(state.roundVariant.file);
+    return state.roundVariant;
+  }
+
+  // Lazily fetch + decode one audio file. The cache is keyed by FILE NAME so
+  // variants of the same key never evict each other. Never blocks playback:
+  // synth stands in until the buffer is ready.
+  function prefetchFile(fileName) {
+    if (!audioCtx || recorded.cache[fileName]) return;
+    const entry = { status: 'loading', buffer: null };
+    recorded.cache[fileName] = entry;
     fetch('audio/' + fileName)
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -438,13 +470,86 @@
         entry.buffer = buffer;
       })
       .catch(function () {
-        entry.status = 'failed'; // synth fallback for this key
+        entry.status = 'failed'; // synth fallback wherever this file was wanted
       });
   }
 
-  function getReadyBuffer(keyFile, mode) {
-    const entry = recorded.cache[mode + ':' + keyFile];
-    return (entry && entry.status === 'ready') ? { buffer: entry.buffer, noteAt: entry.noteAt } : null;
+  function getReadyFileBuffer(fileName) {
+    const entry = recorded.cache[fileName];
+    return (entry && entry.status === 'ready') ? entry.buffer : null;
+  }
+
+  // --- Recorded note pack ---------------------------------------------------
+  // Optional manifest "notes" map: spelled note name -> file, covering the 36
+  // chromatic notes C3–B5 (every pitch the game can ask for), flat spellings
+  // only. Each degree-pitch played as CONTENT — the mystery note, both A/B
+  // comparison notes, each resolution-walk step — prefers the recorded note
+  // and falls back to the classic synth triangle PER NOTE, so partial packs
+  // and still-loading files stay seamless. Feedback dings/thunks/fanfare stay
+  // synthesized: they're UI sounds, not musical content.
+
+  const NOTE_PITCH_CLASSES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+  // Spelled name for a pitch given in semitones from A4:
+  // 0 → "A4", -21 → "C3", 14 → "B5".
+  function noteNameForSemis(semitonesFromA4) {
+    const fromC0 = semitonesFromA4 + 57; // A4 sits 57 semitones above C0
+    const octave = Math.floor(fromC0 / 12);
+    const pc = ((fromC0 % 12) + 12) % 12;
+    return NOTE_PITCH_CLASSES[pc] + octave;
+  }
+
+  function noteFileFor(semitonesFromA4) {
+    const notes = recorded.manifest && recorded.manifest.notes;
+    if (!notes) return null;
+    const file = notes[noteNameForSemis(semitonesFromA4)];
+    return typeof file === 'string' ? file : null;
+  }
+
+  function prefetchNote(semitonesFromA4) {
+    const file = noteFileFor(semitonesFromA4);
+    if (file) prefetchFile(file);
+  }
+
+  // Ready-to-play buffer for a pitch, or null. A miss also kicks off the
+  // fetch, so a pitch that fell back to synth this time is recorded next time.
+  function getReadyNoteBuffer(semitonesFromA4) {
+    const file = noteFileFor(semitonesFromA4);
+    if (!file) return null;
+    prefetchFile(file); // no-op once cached
+    return getReadyFileBuffer(file);
+  }
+
+  // One recorded note through its own gain (recordings arrive at full level
+  // and a piano note rings for seconds). holdSec null lets it ring naturally
+  // (the mystery note); with holdSec the gain releases over ~80ms after the
+  // hold, so quick passages stay articulate instead of stacking five deep.
+  function playNoteBuffer(ctx, buffer, when, peak, holdSec) {
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(peak, when);
+    if (holdSec != null) {
+      gain.gain.setValueAtTime(peak, when + holdSec);
+      gain.gain.linearRampToValueAtTime(0, when + holdSec + 0.08);
+    }
+    src.connect(gain);
+    gain.connect(masterGain);
+    src.start(when);
+    if (holdSec != null) src.stop(when + holdSec + 0.13);
+    trackNodes(src, gain);
+  }
+
+  // Play one scale-degree pitch as musical content: the recorded note when
+  // it's listed and loaded, else the synth triangle — decided per note.
+  // opts: { synthDur, synthPeak, recPeak, recHold }.
+  function playPitch(ctx, semitonesFromA4, when, opts) {
+    const buffer = getReadyNoteBuffer(semitonesFromA4);
+    if (buffer) {
+      playNoteBuffer(ctx, buffer, when, opts.recPeak, opts.recHold !== undefined ? opts.recHold : null);
+    } else {
+      playTone(ctx, masterGain, freq(semitonesFromA4), when, opts.synthDur, 'triangle', opts.synthPeak);
+    }
   }
 
   /* =======================================================================
@@ -484,6 +589,7 @@
     currentKey: null,
     currentDegreeId: null,
     displacement: 0,        // 0 or +12 (Hard only)
+    roundVariant: null,     // this round's pinned context variant { file, noteAt } | null
     lastKeyName: null,
     lastDegreeId: null,
     replaysThisRound: 0,
@@ -696,9 +802,15 @@
     // Hard only: 50% chance the target sits an octave up (same degree id).
     state.displacement = (state.difficulty === 'hard' && Math.random() < 0.5) ? 12 : 0;
 
-    // Kick off the recorded-audio prefetch for this key/mode (no-op if
-    // there is no drop-in manifest).
-    prefetchBuffer(state.currentKey.file, state.contextMode);
+    // Round assets: pin this round's context variant and start its fetch,
+    // plus the mystery note and its resolution walk from the note pack
+    // (all no-ops without a drop-in manifest; synth covers anything late).
+    state.roundVariant = null;
+    chooseRoundVariant();
+    prefetchNote(state.currentKey.tonic + targetSemisFor(state.currentDegreeId, state.displacement));
+    resolutionPathFor(state.currentDegreeId, state.displacement).forEach(function (s) {
+      prefetchNote(state.currentKey.tonic + s);
+    });
 
     // Reset round UI.
     keyName.textContent = 'Key of ' + state.currentKey.name + ' major';
@@ -751,21 +863,24 @@
 
     let targetAt;
     let totalDur;
-    const rec = getReadyBuffer(state.currentKey.file, state.contextMode);
+    // This round's pinned recorded variant (chooseRoundVariant also covers a
+    // manifest that arrived after the round started; the pick then holds for
+    // the rest of the round).
+    const variant = chooseRoundVariant();
+    const recBuffer = variant ? getReadyFileBuffer(variant.file) : null;
 
-    if (rec) {
-      // Recorded piano context; the mystery note stays synthesized on top
-      // (timbral contrast helps it stand out).
-      const buffer = rec.buffer;
-      playBuffer(ctx, buffer, t0);
-      if (rec.noteAt != null) {
-        targetAt = t0 + Math.min(Math.max(rec.noteAt, 0.2), buffer.duration + 1);
+    if (recBuffer) {
+      // Recorded piano context — always this round's chosen variant, so a
+      // replay re-presents the identical stimulus.
+      playBuffer(ctx, recBuffer, t0);
+      if (variant.noteAt != null) {
+        targetAt = t0 + Math.min(Math.max(variant.noteAt, 0.2), recBuffer.duration + 1);
       } else if (state.contextMode === 'cadence') {
-        targetAt = t0 + Math.max(1.1, buffer.duration * 0.55);
+        targetAt = t0 + Math.max(1.1, recBuffer.duration * 0.55);
       } else {
-        targetAt = t0 + Math.min(1.1, Math.max(0.35, buffer.duration - 0.9));
+        targetAt = t0 + Math.min(1.1, Math.max(0.35, recBuffer.duration - 0.9));
       }
-      totalDur = Math.max(buffer.duration, (targetAt - t0) + 0.9) + 0.1;
+      totalDur = Math.max(recBuffer.duration, (targetAt - t0) + 0.9) + 0.1;
     } else if (state.contextMode === 'cadence') {
       totalDur = scheduleCadenceContext(ctx, tonic, t0);
       targetAt = t0 + 1.65 + 0.4; // 0.4s after the final I strikes
@@ -774,8 +889,10 @@
       targetAt = t0 + 1.1; // 1.1s after chord onset
     }
 
-    // The mystery note: triangle so it pops over the sine/piano bed.
-    playTone(ctx, masterGain, freq(tonic + targetSemis), targetAt, 0.9, 'triangle', 0.22);
+    // The mystery note: recorded piano when the note pack provides it (full
+    // recorded level, natural ring), otherwise a triangle so it pops over
+    // the sine/piano bed.
+    playPitch(ctx, tonic + targetSemis, targetAt, { synthDur: 0.9, synthPeak: 0.22, recPeak: 0.9 });
 
     // Unlock answering shortly after the target becomes audible.
     schedule(function () {
@@ -985,5 +1102,6 @@
     targetSemisFor: targetSemisFor,
     resolutionPathFor: resolutionPathFor,
     degreeIdForPitchClass: degreeIdForPitchClass,
+    noteNameForSemis: noteNameForSemis,
   };
 })();
