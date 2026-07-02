@@ -1,164 +1,121 @@
 # Recording guide — the Key Change audio program
 
-This is the complete recording plan for turning the synthesized ear-training
-audio into real piano, phase by phase. Every file you record slots into a
-tested pipeline: you hand me raw takes, I trim, loudness-match, encode, wire
-the manifest, and deploy. You never touch code or file plumbing.
+The complete recording plan for turning the synthesized ear-training audio into real
+piano. You hand me raw takes; I split, trim, pitch-verify, loudness-match, encode,
+wire the manifests, and deploy. You never bounce individual files or name anything.
 
-**Work the phases in order.** Each one is immediately useful on its own, and
-Phase 0 exists so you never record 20+ takes before hearing how one sounds in
-the actual game.
+**Status: Phase 0 (pilot) is shipped and approved.** Your piano measured −2.5 cents
+from A440 — green light, no compensation needed.
 
-| Phase | What | Files | Est. time | Status |
-|---|---|---|---|---|
-| 0 | Pilot: key of C only | 2 | ~15 min | **Game is live — works today** |
-| 1 | All remaining major keys | 22 | ~1–1.5 h | **Works today** |
-| 2 | Minor keys | 24 | ~1–1.5 h | Unlocks minor mode (small build on my side) |
-| 3 | Chord qualities | 28 starter / 84 full | ~1 h / ~2.5 h | Unlocks a new chord-ID game (I'll build it) |
-| 4 | Single piano notes | 36 | ~45 min | Unlocks all-piano mode + future dictation |
-| 5 | Progressions | TBD | — | Future module — let's design it together first |
+| Take | What | Playing time | Why / unlocks |
+|---|---|---|---|
+| ✅ Pilot | C major context + cadence | done | Live on the site now |
+| 1 | Note pack: 36 chromatic singles, C3→B5 | ~8 min | **Replaces the synth mystery-note sound everywhere, all 12 keys, immediately** |
+| 2 | Major contexts: 12 chords, C→B chromatic | ~5 min | Chord mode fully real piano |
+| 3 | Major cadences: 12 cadences, C→B | ~8 min | Cadence mode fully real piano |
+| 4+ | Variation pilots on C (inversions, voicings, broken) | ~5 min | Taste-test before mass-recording variations |
+| later | Variation sets across keys · minor keys · chord qualities | — | Minor mode, chord-ID game, richer variety |
 
 ---
+
+## The one-take protocol (no more bouncing)
+
+Each batch above is **one continuous recording, bounced once, named anything you
+like.** Play the items in the listed order and leave **about 2 seconds of clear
+silence between items** — that's the whole discipline. A splitter tool cuts the take
+at the silences, trims each item, and **pitch-verifies every segment against what it
+expects** (so if you skip a note or play D♭ twice, the report says "segment 14
+expected A3, measured B♭3" and you re-record just that item, not the take).
+
+For cadence takes, the gaps between chords *within* one cadence are short and
+musical; only the 2-second gaps between *cadences* mark the cuts — so play
+naturally, at any tempo. The final-chord timing of each cadence is measured per
+file automatically.
 
 ## The four non-negotiables
 
-1. **Tune to A = 440.** The mystery notes and all other game audio are
-   synthesized in equal temperament at A440. If your acoustic piano sits even
-   slightly off, every round will sound subtly sour against the synth note. A
-   digital piano or piano VST is guaranteed correct and is the safest source.
-   If you record acoustic, have it tuned first and check with a tuner app.
-2. **Block chords, no rolling.** All voices land together in one clean attack.
-   A rolled chord smears the moment the harmony starts, which the game times
-   against.
-3. **Same voicing and register every time.** Left hand: the root as an octave
-   (for C major, roughly the two Cs below middle C). Right hand: the
-   close-position chord just below middle C. Mezzo-forte, sustain pedal down,
-   let it ring.
-4. **One phase, one sitting.** Same instrument, same mic position or patch,
-   same level. Consistency across a phase matters more than absolute quality —
-   one key sounding different from its neighbors is what players notice.
+1. **Tune to A = 440.** (Your piano passed — re-verify with a tuner app after the
+   next tuning visit or big weather swing.)
+2. **Block chords, no rolling** — except, of course, in deliberately broken/arpeggiated
+   variation takes.
+3. **Same core voicing for the standard sets.** Left hand: root octave below middle C.
+   Right hand: close-position chord just below middle C. Mezzo-forte, pedal, let ring.
+   (Variation takes intentionally break this rule — that's their job.)
+4. **One take, one sitting** — same instrument, mic position, and level within a take.
 
-Also: leave ~half a second of silence before each attack, let every chord decay
-naturally, and don't fade or trim anything yourself — I do precise trims on my
-end. Don't stress exact durations; the targets below have slack built in.
+Leave ~2s of silence at the very start of a take too, and let the last item ring out
+fully before stopping the recorder.
 
-## File format
+## Format and delivery
 
-- **WAV, 44.1 or 48 kHz, 16- or 24-bit, mono or stereo.** (High-bitrate M4A/MP3
-  ≥192 kbps is acceptable if WAV is awkward, but WAV masters are preferred — I
-  encode the web copies and you keep the originals for any future re-master.)
-- One musical item per file.
-- Name files as listed below if convenient — but a folder labeled with the
-  phase and any consistent naming is fine; I'll rename.
-- Flat spellings everywhere: `Db Eb Gb Ab Bb` (never `C#`, `F#`, etc.).
-- Delivery: zip or folder via anything (AirDrop, Drive, straight into the repo
-  under `games/degree-detective/audio/` if you like). I take it from there.
+- **WAV, 44.1 or 48 kHz, 16- or 24-bit, mono or stereo.** One file per take, named
+  whatever makes sense to you ("major contexts take 2.wav" is perfect).
+- Drop takes in the usual iCloud folder (`audio samples for ear training/`) — a
+  subfolder per batch keeps it tidy as this grows. Say the word and I'll take it
+  from there.
 
 ---
 
-## Phase 0 — pilot (do this first)
+## Take 1 — the note pack (record this first)
 
-Record just these two, send them, and I'll have them live the same day. Play a
-few rounds on the real site, and only continue to Phase 1 once the register,
-length, and tone feel right to your ear. Adjusting after 2 files is trivial;
-after 24, it's a re-record.
+**36 single notes, chromatic from C3 up to B5** (the C an octave below middle C,
+rising to the B nearly two octaves above middle C). One note every ~3 seconds:
+strike, let it sing for a couple of seconds, 2s gap, next note.
 
-- [ ] `context-C.wav` — sustained C major chord: one clean block attack, pedal,
-      ring **3–4 s**. (The game drops the mystery note in 1.1 s after your
-      attack, so the chord must still be singing well past that.)
-- [ ] `cadence-C.wav` — **I–IV–V–I** in C (C–F–G–C): three steady chords at
-      whatever tempo feels musical, then hold the final C chord **2.5–3 s**.
-      Exact pacing doesn't matter — the integration step measures where your
-      final chord lands and times the mystery note to it per file.
+- Mezzo-forte, pedal, **as consistent a velocity as you can manage** — evenness
+  across the 36 is the entire challenge of this take.
+- Why first: these notes replace the synthesized mystery-note sound in every round,
+  every key, both modes — including the resolution walk-home and the wrong-answer
+  comparison. It's the biggest audible upgrade per minute of playing, and it doesn't
+  wait on any other take.
 
-## Phase 1 — the other 11 major keys (works today)
+## Takes 2 and 3 — major contexts and cadences
 
-Same two recordings per key. Contexts first (all 12 done = Chord mode fully
-real), then cadences.
+- **Take 2 — contexts:** 12 sustained tonic major chords, chromatic order
+  C, D♭, D, E♭, E, F, G♭, G, A♭, A, B♭, B. Standard voicing, ring 3–4s each, 2s gaps.
+- **Take 3 — cadences:** 12 I–IV–V–I cadences, same chromatic order, any musical
+  tempo, hold each final chord ~3s, 2s gaps between cadences.
 
-**Contexts** — sustained tonic major chord, 3–4 s:
+## Take 4+ — variations (pilot on C first)
 
-- [ ] `context-Db.wav`
-- [ ] `context-D.wav`
-- [ ] `context-Eb.wav`
-- [ ] `context-E.wav`
-- [ ] `context-F.wav`
-- [ ] `context-Gb.wav`
-- [ ] `context-G.wav`
-- [ ] `context-Ab.wav`
-- [ ] `context-A.wav`
-- [ ] `context-Bb.wav`
-- [ ] `context-B.wav`
+Variety in how the harmony is presented builds recognition that generalizes instead
+of anchoring to one voicing's exact sound. The game picks randomly among a key's
+recorded presentations each round (replays within a round always replay the same one).
 
-**Cadences** — I–IV–V–I, final chord held:
+Pilot these on **C only** first — one short take, a few presentations with 2s gaps —
+and play them in the game before recording any across all keys:
 
-- [ ] `cadence-Db.wav`
-- [ ] `cadence-D.wav`
-- [ ] `cadence-Eb.wav`
-- [ ] `cadence-E.wav`
-- [ ] `cadence-F.wav`
-- [ ] `cadence-Gb.wav`
-- [ ] `cadence-G.wav`
-- [ ] `cadence-Ab.wav`
-- [ ] `cadence-A.wav`
-- [ ] `cadence-Bb.wav`
-- [ ] `cadence-B.wav`
+- First inversion, second inversion
+- An open / spread voicing (or any "unconventional" voicing you like)
+- A broken chord: arpeggiated pattern that **ends grounded on the tonic**, then rings
+- A "sequential" presentation: chord rings and fully decays — the mystery note will be
+  timed to arrive *after* the ring, in silence (this is just a timing value on my
+  side; record the chord alone and let it decay naturally)
 
-## Phase 2 — minor keys (unlocks minor mode)
+**One guardrail:** every variation must still unambiguously establish the tonic.
+Inversions and voicings are fine because the pitch collection says "C major" clearly;
+a broken pattern should start or land on the tonic. If a presentation could make a
+listener unsure what key they're in, it doesn't belong in the pool.
 
-Once these exist I'll add a major/minor toggle to Degree Detective — the game
-logic is a small, planned extension; your audio contract doesn't change.
+When the C pilots feel right in-game, record each variation type as its own take
+across all 12 keys (chromatic order, 2s gaps), one take per type.
 
-- **Minor contexts** (12): sustained tonic **minor** chord, same voicing rules.
-  `context-Cm.wav`, `context-Dbm.wav`, … `context-Bm.wav`
-- **Minor cadences** (12): **i–iv–V–i** — note the **V stays major** (harmonic
-  minor cadence; in C minor that's Cm–Fm–G–Cm). Same shape as the major
-  cadences: three steady chords, hold the final one.
-  `cadence-Cm.wav`, … `cadence-Bm.wav`
+## Later phases (same protocol when you're ready)
 
-## Phase 3 — chord qualities (new game: "name that chord")
-
-A future module: a chord plays, the player names its quality. Seven qualities,
-one block chord per file, ~3 s ring, root position, same register rules:
-
-**major · minor · diminished · augmented · dominant 7 · major 7 · minor 7**
-
-- **Starter set (28 files):** all 7 qualities on just four roots — **C, Eb, Gb,
-  A**. The game pitch-shifts ±1 semitone to cover all 12 roots with no audible
-  quality loss, so this small set makes the whole module real.
-  Naming: `quality-C-maj.wav`, `quality-C-min.wav`, `quality-C-dim.wav`,
-  `quality-C-aug.wav`, `quality-C-dom7.wav`, `quality-C-maj7.wav`,
-  `quality-C-min7.wav`, then the same seven for Eb, Gb, A.
-- **Full set (84 files):** the same 7 qualities on all 12 roots — zero
-  pitch-shifting, maximum fidelity. Worth doing eventually; not needed to
-  launch the module.
-
-## Phase 4 — single piano notes (all-piano mode + dictation)
-
-36 chromatic notes, **C3 up to B5** (the C an octave below middle C, up to the
-B nearly two octaves above it). One note per file, mezzo-forte, pedal, ~2.5–3 s
-ring. **Consistent velocity across all 36 is the whole challenge here** — on a
-digital piano, consider fixing velocity in the patch settings.
-
-Naming: `note-C3.wav`, `note-Db3.wav`, … `note-B5.wav`.
-
-Unlocks: an advanced Degree Detective mode where the mystery note is real piano
-too (same-timbre listening — harder and closer to real music), and it's the
-raw material for a future melodic-dictation game.
-
-## Phase 5 — progression recognition (later)
-
-Hearing I–V–vi–IV vs. I–vi–IV–V etc. is a natural next module, but the useful
-progression list and key coverage deserve a design conversation before you
-record anything. Nothing to do yet.
+- **Minor keys:** one take of 12 minor contexts + one take of 12 i–iv–V–i cadences
+  (V stays major — in C minor: Cm–Fm–G–Cm). Unlocks the minor-mode toggle.
+- **Chord qualities:** one take of 28 chords — maj, min, dim, aug, dom7, maj7, min7
+  on C, then the same seven on E♭, G♭, A. Unlocks the chord-ID game. (Full 84 across
+  all 12 roots is an optional fidelity upgrade later.)
+- **Progressions:** design conversation first — nothing to record yet.
 
 ---
 
-## What happens after you hand me files
+## What happens after you hand me a take
 
-1. I trim silence to put each attack exactly where the game expects it.
-2. I loudness-match everything in the batch so no key or chord jumps out.
-3. I encode web copies, write the manifest, verify in the browser (the whole
-   pipeline was smoke-tested end-to-end before this guide was written), commit,
-   and deploy.
-4. You play it on the live site and tell me what to adjust.
+1. Split at the silences; trim every segment's attack to spec.
+2. **Pitch-verify every segment** against the expected item — you get a pass/fail
+   report naming anything that needs a re-record.
+3. Loudness-match the batch, encode web copies, wire the manifest (including
+   per-cadence and per-variation note timing), verify in the browser, deploy.
+4. You play it live and tell me what to adjust.
