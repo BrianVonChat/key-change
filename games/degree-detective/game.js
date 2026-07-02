@@ -416,11 +416,18 @@
     if (!recorded.manifest || !audioCtx) return;
     const table = mode === 'cadence' ? recorded.manifest.cadences : recorded.manifest.contexts;
     if (!table || !table[keyFile]) return;
+    // Entries are either "file.m4a" or { file: "file.m4a", noteAt: seconds } —
+    // noteAt pins when the mystery note enters, so cadences can be played at
+    // any natural tempo rather than to a fixed proportion of the file.
+    const spec = table[keyFile];
+    const fileName = typeof spec === 'string' ? spec : spec && spec.file;
+    if (!fileName) return;
+    const noteAt = (spec && typeof spec === 'object' && typeof spec.noteAt === 'number') ? spec.noteAt : null;
     const cacheKey = mode + ':' + keyFile;
     if (recorded.cache[cacheKey]) return;
-    const entry = { status: 'loading', buffer: null };
+    const entry = { status: 'loading', buffer: null, noteAt: noteAt };
     recorded.cache[cacheKey] = entry;
-    fetch('audio/' + table[keyFile])
+    fetch('audio/' + fileName)
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.arrayBuffer();
@@ -437,7 +444,7 @@
 
   function getReadyBuffer(keyFile, mode) {
     const entry = recorded.cache[mode + ':' + keyFile];
-    return (entry && entry.status === 'ready') ? entry.buffer : null;
+    return (entry && entry.status === 'ready') ? { buffer: entry.buffer, noteAt: entry.noteAt } : null;
   }
 
   /* =======================================================================
@@ -744,13 +751,16 @@
 
     let targetAt;
     let totalDur;
-    const buffer = getReadyBuffer(state.currentKey.file, state.contextMode);
+    const rec = getReadyBuffer(state.currentKey.file, state.contextMode);
 
-    if (buffer) {
+    if (rec) {
       // Recorded piano context; the mystery note stays synthesized on top
       // (timbral contrast helps it stand out).
+      const buffer = rec.buffer;
       playBuffer(ctx, buffer, t0);
-      if (state.contextMode === 'cadence') {
+      if (rec.noteAt != null) {
+        targetAt = t0 + Math.min(Math.max(rec.noteAt, 0.2), buffer.duration + 1);
+      } else if (state.contextMode === 'cadence') {
         targetAt = t0 + Math.max(1.1, buffer.duration * 0.55);
       } else {
         targetAt = t0 + Math.min(1.1, Math.max(0.35, buffer.duration - 0.9));

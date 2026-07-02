@@ -66,11 +66,10 @@ after 24, it's a re-record.
 - [ ] `context-C.wav` — sustained C major chord: one clean block attack, pedal,
       ring **3–4 s**. (The game drops the mystery note in 1.1 s after your
       attack, so the chord must still be singing well past that.)
-- [ ] `cadence-C.wav` — **I–IV–V–I** in C (C–F–G–C): first three chords steady
-      at about one per **0.7 s**, then hold the final C chord **at least as
-      long as the first three took combined** (~2.5–3 s). The game plays the
-      mystery note just past the halfway point of the file, which with this
-      shape lands right on your sustained final chord.
+- [ ] `cadence-C.wav` — **I–IV–V–I** in C (C–F–G–C): three steady chords at
+      whatever tempo feels musical, then hold the final C chord **2.5–3 s**.
+      Exact pacing doesn't matter — the integration step measures where your
+      final chord lands and times the mystery note to it per file.
 
 ## Phase 1 — the other 11 major keys (works today)
 

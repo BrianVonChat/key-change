@@ -20,17 +20,23 @@ Create an `audio/` folder next to this file, containing `manifest.json`:
 ```json
 {
   "contexts": {
-    "C": "context-C.mp3",
-    "Db": "context-Db.mp3"
+    "C": "context-C.m4a",
+    "Db": "context-Db.m4a"
   },
   "cadences": {
-    "C": "cadence-C.mp3"
+    "C": { "file": "cadence-C.m4a", "noteAt": 5.2 }
   }
 }
 ```
 
 - `contexts` are used in **Chord** mode, `cadences` in **Cadence** mode.
 - Key names use flat spellings: `C Db D Eb E F Gb G Ab A Bb B`.
+- Any audio format `decodeAudioData` handles works: `.m4a` (AAC), `.mp3`, `.wav`.
+- An entry is either a plain filename, or `{ "file": "...", "noteAt": seconds }`.
+  `noteAt` pins exactly when the synthesized mystery note enters, measured from the
+  start of the file. Use it for cadences played at a natural tempo — set it a
+  half-second or so after the final tonic chord lands. Without it, the note enters
+  1.1 s into a context file, or at 55% of a cadence file's length.
 - **Partial coverage is fine.** Any key (or mode) not listed simply falls back to synth,
   so you can record a few keys at a time.
 
@@ -46,7 +52,7 @@ Create an `audio/` folder next to this file, containing `manifest.json`:
 
 ## Timing tip
 
-The synthesized mystery note enters **1.1 s** into a chord file, and at about **55%**
-of a cadence file's length. So: let chord recordings ring from the very start, and in
-cadence recordings land the final I chord before the halfway point so the note arrives
-over the sustained tonic.
+Chord files: let the chord ring from the very start of the file — the mystery note
+enters 1.1 s in. Cadence files: play at whatever tempo feels musical and hold the
+final I chord a good while; the integration step measures where that final chord
+lands and pins the note entry with `noteAt`, so there's no pacing to hit.
