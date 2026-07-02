@@ -285,7 +285,6 @@ button {
 
 .accidental {
   fill: var(--color-text);
-  font-size: 26px;
 }
 
 .clef-indicator {

@@ -210,17 +210,19 @@
   // Staff geometry (SVG, viewBox 0 0 500 220)
   // ---------------------------------------------------------------------
 
+  // Single-staff geometry. Grand-staff mode computes its own scale inside
+  // renderStaff(). Every symbol, notehead, and ledger size derives from the
+  // staff's lineSpacing — see assets/js/notation.js for the rendering rule.
   const GEOM = {
     lineSpacing: 20,           // px between adjacent staff lines
     trebleBaselineY: 140,      // y of step-0 (bottom treble line, E4)
-    bassBaselineY: 80,         // used only for the top staff line reference in grand staff mode
     staffLeft: 150,
     staffRight: 460
   };
 
-  function stepToY(step, baselineY) {
+  function stepToY(step, baselineY, ss) {
     // moving line -> space -> line is half a line-gap per step
-    return baselineY - step * (GEOM.lineSpacing / 2);
+    return baselineY - step * (ss / 2);
   }
 
   function clearSvg() {
@@ -233,10 +235,10 @@
     return el;
   }
 
-  function drawStaffLines(baselineY, cls) {
+  function drawStaffLines(baselineY, ss, cls) {
     const group = svgEl('g', { class: cls || '' });
     for (let i = 0; i <= 8; i += 2) {
-      const y = stepToY(i, baselineY);
+      const y = stepToY(i, baselineY, ss);
       group.appendChild(svgEl('line', {
         x1: GEOM.staffLeft, y1: y, x2: GEOM.staffRight, y2: y,
         class: 'staff-line'
@@ -245,29 +247,26 @@
     return group;
   }
 
-  function drawClef(clef, baselineY) {
-    // Unicode musical symbols positioned/nudged by eye against the staff lines.
-    const isTreble = clef === 'treble';
-    const text = svgEl('text', {
-      x: GEOM.staffLeft + 14,
-      y: isTreble ? baselineY - 4 : baselineY + 2,
-      class: 'staff-clef',
-      'font-size': isTreble ? 78 : 46,
-      'font-family': 'Georgia, serif'
+  function drawClef(clef, baselineY, ss) {
+    // Shared vector glyph: anchored to its reference line (G or F) and scaled
+    // from lineSpacing. Never a font character — see assets/js/notation.js.
+    return MusicNotation.clef(clef, {
+      x: GEOM.staffLeft + 0.5 * ss,
+      bottomLineY: baselineY,
+      lineSpacing: ss,
+      className: 'staff-clef'
     });
-    text.textContent = isTreble ? '\u{1D11E}' : '\u{1D122}';
-    return text;
   }
 
-  function drawLedgerLines(step, baselineY) {
+  function drawLedgerLines(step, baselineY, ss) {
     const group = svgEl('g', { class: 'ledger-lines' });
     const cx = GEOM.staffLeft + (GEOM.staffRight - GEOM.staffLeft) / 2;
-    const width = 26;
+    const width = 1.8 * ss; // notehead width plus a bit of overhang each side
 
     if (step > 8) {
       // loop every even step strictly outside the staff up to and including the note's step
       for (let s = 10; s <= step; s += 2) {
-        const y = stepToY(s, baselineY);
+        const y = stepToY(s, baselineY, ss);
         group.appendChild(svgEl('line', {
           x1: cx - width / 2, y1: y, x2: cx + width / 2, y2: y,
           class: 'ledger-line'
@@ -275,7 +274,7 @@
       }
     } else if (step < 0) {
       for (let s = -2; s >= step; s -= 2) {
-        const y = stepToY(s, baselineY);
+        const y = stepToY(s, baselineY, ss);
         group.appendChild(svgEl('line', {
           x1: cx - width / 2, y1: y, x2: cx + width / 2, y2: y,
           class: 'ledger-line'
@@ -285,25 +284,24 @@
     return group;
   }
 
-  function drawNote(step, baselineY, accidental) {
+  function drawNote(step, baselineY, ss, accidental) {
     const group = svgEl('g', { class: 'note-group' });
     const cx = GEOM.staffLeft + (GEOM.staffRight - GEOM.staffLeft) / 2;
-    const y = stepToY(step, baselineY);
+    const y = stepToY(step, baselineY, ss);
 
     // stem direction: up if on/below the middle line (step <= 4), else down
     const stemUp = step <= 4;
-    const noteheadRx = 9;
-    const noteheadRy = 7;
-    const stemLength = 60;
+    // engraving proportions, in staff spaces: notehead ~1 space tall,
+    // stem ~3.5 spaces long
+    const noteheadRx = 0.65 * ss;
+    const noteheadRy = 0.5 * ss;
+    const stemLength = 3.5 * ss;
 
     if (accidental) {
-      const accEl = svgEl('text', {
-        x: cx - 30, y: y + 8,
-        class: 'accidental',
-        'text-anchor': 'middle'
-      });
-      accEl.textContent = accidental === 'sharp' ? '♯' : '♭';
-      group.appendChild(accEl);
+      group.appendChild(MusicNotation.accidental(
+        accidental === 'sharp' ? 'sharp' : 'flat',
+        { x: cx - 1.5 * ss, y: y, lineSpacing: ss, className: 'accidental' }
+      ));
     }
 
     const stem = svgEl('line', {
@@ -337,29 +335,30 @@
     if (cfg.grandStaff) {
       // Grand staff: draw both staves for visual context; the active clef
       // (chosen once per round) carries the note + ledger lines.
-      const trebleY = 70;
-      const bassY = 190;
+      // Smaller staff scale so the full hard-mode ledger range (steps -6..14
+      // relative to either staff) fits the canvas without the two staves'
+      // ledger territory overlapping: max note extent above a bottom line is
+      // 14 * ss/2 + notehead, hence the staff positions below.
+      const ss = 14;
+      const trebleY = 112;
+      const bassY = 220;
 
-      els.svg.setAttribute('viewBox', '0 0 500 260');
+      els.svg.setAttribute('viewBox', '0 0 500 280');
 
-      els.svg.appendChild(drawStaffLines(trebleY));
-      els.svg.appendChild(drawStaffLines(bassY));
-      els.svg.appendChild(drawClef('treble', trebleY));
-      els.svg.appendChild(drawClef('bass', bassY));
+      els.svg.appendChild(drawStaffLines(trebleY, ss));
+      els.svg.appendChild(drawStaffLines(bassY, ss));
+      els.svg.appendChild(drawClef('treble', trebleY, ss));
+      els.svg.appendChild(drawClef('bass', bassY, ss));
 
-      // brace + barline joining the two staves
+      // barline joining the two staves (top treble line -> bottom bass line)
       els.svg.appendChild(svgEl('line', {
-        x1: GEOM.staffLeft, y1: trebleY, x2: GEOM.staffLeft, y2: bassY,
+        x1: GEOM.staffLeft, y1: trebleY - 4 * ss, x2: GEOM.staffLeft, y2: bassY,
         class: 'staff-line'
-      }));
-      els.svg.appendChild(svgEl('line', {
-        x1: GEOM.staffRight, y1: trebleY, x2: GEOM.staffRight, y2: bassY,
-        class: 'staff-line', stroke: 'none'
       }));
 
       const activeBaseline = note.clef === 'treble' ? trebleY : bassY;
-      els.svg.appendChild(drawLedgerLines(note.step, activeBaseline));
-      els.svg.appendChild(drawNote(note.step, activeBaseline, note.accidental));
+      els.svg.appendChild(drawLedgerLines(note.step, activeBaseline, ss));
+      els.svg.appendChild(drawNote(note.step, activeBaseline, ss, note.accidental));
 
       // clef indicator, top-left
       const indicator = svgEl('text', {
@@ -369,11 +368,12 @@
       els.svg.appendChild(indicator);
     } else {
       els.svg.setAttribute('viewBox', '0 0 500 220');
+      const ss = GEOM.lineSpacing;
       const baselineY = GEOM.trebleBaselineY;
-      els.svg.appendChild(drawStaffLines(baselineY));
-      els.svg.appendChild(drawClef('treble', baselineY));
-      els.svg.appendChild(drawLedgerLines(note.step, baselineY));
-      els.svg.appendChild(drawNote(note.step, baselineY, note.accidental));
+      els.svg.appendChild(drawStaffLines(baselineY, ss));
+      els.svg.appendChild(drawClef('treble', baselineY, ss));
+      els.svg.appendChild(drawLedgerLines(note.step, baselineY, ss));
+      els.svg.appendChild(drawNote(note.step, baselineY, ss, note.accidental));
     }
   }
 

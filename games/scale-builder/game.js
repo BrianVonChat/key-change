@@ -566,7 +566,7 @@
     const key = KEY_DATA[keyId];
 
     const lineSpacing = 8;
-    const baselineY = 46; // bottom staff line
+    const baselineY = 48; // bottom staff line (viewBox 0 0 150 64)
     const staffLeft = 34;
     const staffRight = 146;
 
@@ -582,29 +582,29 @@
       }));
     }
 
-    // Treble clef glyph
-    const clef = svgEl('text', {
-      x: staffLeft - 20, y: baselineY - 2, class: 'key-sig-clef',
-      'font-size': 34, 'font-family': 'Georgia, serif'
-    });
-    clef.textContent = '\u{1D11E}';
-    svg.appendChild(clef);
+    // Treble clef — shared vector glyph, anchored/scaled from the staff
+    // geometry (never a font character; see assets/js/notation.js).
+    const clefX = staffLeft + 2;
+    svg.appendChild(MusicNotation.clef('treble', {
+      x: clefX,
+      bottomLineY: baselineY,
+      lineSpacing: lineSpacing,
+      className: 'key-sig-clef'
+    }));
 
-    // Accidental glyphs
+    // Accidental glyphs, laid out after the clef in engraving order
     const steps = key.sig.type === 'sharp' ? SHARP_GLYPH_STEPS : (key.sig.type === 'flat' ? FLAT_GLYPH_STEPS : []);
-    const glyph = key.sig.type === 'sharp' ? '♯' : '♭';
     const count = key.sig.count;
-    const startX = staffLeft + 20;
+    const startX = clefX + MusicNotation.clefWidth('treble', lineSpacing) + 6;
     const glyphSpacing = 10;
 
     for (let i = 0; i < count; i++) {
-      const y = stepToY(steps[i]);
-      const text = svgEl('text', {
-        x: startX + i * glyphSpacing, y: y + 4, class: 'key-sig-accidental',
-        'font-size': 15, 'text-anchor': 'middle'
-      });
-      text.textContent = glyph;
-      svg.appendChild(text);
+      svg.appendChild(MusicNotation.accidental(key.sig.type, {
+        x: startX + i * glyphSpacing,
+        y: stepToY(steps[i]),
+        lineSpacing: lineSpacing,
+        className: 'key-sig-accidental'
+      }));
     }
   }
 
