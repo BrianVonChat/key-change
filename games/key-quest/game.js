@@ -467,7 +467,10 @@
     if (!audioCtx) ensureAudioContext();
 
     state.roundAttempts++;
-    const isCorrect = keyName === state.currentTarget.name;
+    // The prompt names a NOTE, never an octave ("Find: F"), so any key with
+    // that letter is right — a two-octave keyboard has two correct F keys.
+    // Comparing full names ("F4" === "F5") wrongly punished the other one.
+    const isCorrect = noteLetterOnly(keyName) === noteLetterOnly(state.currentTarget.name);
 
     if (isCorrect) {
       state.awaitingNext = true;
