@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>San Diego Opera Outreach Program — Music Learning Games</title>
+  <meta name="description" content="Free browser games from the San Diego Opera Outreach Program — note reading, ear training, rhythm, and music theory for student musicians.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+  <link rel="stylesheet" href="brand.css">
+</head>
+<body>
+  <header class="site-header sdo-masthead">
+    <a class="sdo-masthead__wordmark" href="index.html">
+      <span class="sdo-masthead__org">San Diego Opera</span>
+      <span class="sdo-masthead__program">Outreach Program</span>
+    </a>
+    <p class="site-header__tagline sdo-masthead__tagline">Free music learning games for student musicians — note reading, rhythm, ear training, and theory</p>
+  </header>
+
+  <main class="gallery">
+    <section class="gallery__controls">
+      <input
+        type="search"
+        id="search-input"
+        class="search-input"
+        placeholder="Search games by name or description…"
+        aria-label="Search games"
+      >
+
+      <div class="filter-group" id="category-filters" role="group" aria-label="Filter by category">
+        <button type="button" class="filter-chip is-active" data-filter="all">All</button>
+      </div>
+
+      <div class="filter-group" id="difficulty-filters" role="group" aria-label="Filter by difficulty">
+        <button type="button" class="filter-chip is-active" data-difficulty="all">All levels</button>
+        <button type="button" class="filter-chip" data-difficulty="beginner">Beginner</button>
+        <button type="button" class="filter-chip" data-difficulty="intermediate">Intermediate</button>
+        <button type="button" class="filter-chip" data-difficulty="advanced">Advanced</button>
+      </div>
+
+      <select id="sort-select" class="sort-select" aria-label="Sort games">
+        <option value="newest">Newest first</option>
+        <option value="title">Title (A–Z)</option>
+        <option value="difficulty">Difficulty (easiest first)</option>
+      </select>
+    </section>
+
+    <p class="gallery__count" id="results-count" aria-live="polite">Loading games…</p>
+
+    <section class="gallery__grid" id="games-grid" aria-live="polite"></section>
+
+    <p class="gallery__empty" id="empty-state" hidden>
+      No games match your filters. <button type="button" id="clear-filters">Clear filters</button>
+    </p>
+  </main>
+
+  <footer class="site-footer sdo-footer">
+    <p>The Outreach Program of <a href="https://www.sdopera.org" rel="noopener">San Diego Opera</a></p>
+    <p class="sdo-footer__credit">Games powered by <a href="https://key-change.netlify.app" rel="noopener">Key Change</a></p>
+  </footer>
+
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/games-data.js"></script>
+  <script src="assets/js/gallery.js"></script>
+</body>
+</html>

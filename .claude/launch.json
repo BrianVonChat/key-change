@@ -6,6 +6,18 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8532"],
       "port": 8532
+    },
+    {
+      "name": "static-site-b",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4611"],
+      "port": 4611
+    },
+    {
+      "name": "sdo-dist",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8533", "--directory", "dist"],
+      "port": 8533
     }
   ]
 }

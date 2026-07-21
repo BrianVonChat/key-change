@@ -1,0 +1,25 @@
+/* ------------------------------------------------------------------ */
+/* San Diego Opera Outreach — brand token overrides.                   */
+/* Appended after the Key Change defaults by scripts/build-brand.js,   */
+/* so these win the cascade everywhere variables.css is linked —       */
+/* including inside every game.                                        */
+/* Difficulty colors are intentionally left as the shared defaults:    */
+/* they are semantic (beginner/intermediate/advanced), not brand.      */
+/* The doubled :root:root selector outranks the plain :root fallback   */
+/* blocks some games declare in their own style.css, whatever the      */
+/* stylesheet order.                                                   */
+/* ------------------------------------------------------------------ */
+:root:root {
+  --color-bg: #F5F8FA;
+  --color-surface: #FFFFFF;
+  --color-primary: #CD0C24;
+  --color-primary-hover: #A50A1D;
+  --color-secondary: #14202B;
+  --color-secondary-hover: #3A4F63;
+  --color-text: #14202B;
+  --color-text-muted: #5B6C7D;
+  --color-border: #DCE5EC;
+  --shadow-card: 0 2px 8px rgba(20, 32, 43, 0.08);
+  --shadow-card-hover: 0 6px 16px rgba(20, 32, 43, 0.14);
+  --font-heading: "Avenir Next", "Futura", "Century Gothic", "Segoe UI", Helvetica, Arial, sans-serif;
+}

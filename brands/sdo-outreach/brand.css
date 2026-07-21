@@ -1,0 +1,57 @@
+/* San Diego Opera Outreach — homepage masthead & footer.
+   Layered after home.css; token overrides live in theme-tokens.css. */
+
+:root {
+  --sdo-ink-deep: #0C151D;
+  --sdo-gold: #FFA426;
+  /* Wordmark red is brighter than the button red: the brand's #CD0C24
+     falls below 3:1 contrast on the dark masthead, this variant passes
+     for large display text. */
+  --sdo-red-bright: #E8354B;
+}
+
+.sdo-masthead {
+  max-width: none;
+  background: var(--sdo-ink-deep);
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.sdo-masthead__wordmark {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  text-decoration: none;
+}
+
+.sdo-masthead__org {
+  font-family: var(--font-heading);
+  color: var(--sdo-red-bright);
+  font-size: clamp(1.9rem, 5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+
+.sdo-masthead__program {
+  color: #FFFFFF;
+  font-size: clamp(0.8rem, 2vw, 1.05rem);
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  border-top: 2px solid var(--sdo-gold);
+  padding-top: var(--space-xs);
+}
+
+.sdo-masthead__tagline {
+  color: #B9C6D0;
+}
+
+.sdo-masthead :focus-visible {
+  outline-color: var(--sdo-gold);
+}
+
+.sdo-footer__credit {
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-xs);
+}
