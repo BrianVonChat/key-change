@@ -1,54 +1,254 @@
-/* San Diego Opera Outreach — homepage masthead & footer.
-   Layered after home.css; token overrides live in theme-tokens.css. */
+/* San Diego Opera Outreach — brand front end.
+   Layered after the shared stylesheets; palette tokens live in
+   theme-tokens.css. Logo art is SDO's own (extracted from sdopera.org);
+   the red→orange gradient below matches their current wordmark. */
 
 :root {
   --sdo-ink-deep: #0C151D;
+  --sdo-ink: #14202B;
   --sdo-gold: #FFA426;
-  /* Wordmark red is brighter than the button red: the brand's #CD0C24
-     falls below 3:1 contrast on the dark masthead, this variant passes
-     for large display text. */
-  --sdo-red-bright: #E8354B;
+  --sdo-grad: linear-gradient(92deg, #E8354B 0%, #F07A22 100%);
+  --sdo-grad-btn: linear-gradient(92deg, #CD0C24 0%, #E0511F 100%);
 }
 
-.sdo-masthead {
-  max-width: none;
-  background: var(--sdo-ink-deep);
-  padding: var(--space-xl) var(--space-lg);
-}
+html { scroll-behavior: smooth; }
 
-.sdo-masthead__wordmark {
-  display: inline-flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  text-decoration: none;
-}
+/* ---------------------------------------------------------------- hero */
 
-.sdo-masthead__org {
-  font-family: var(--font-heading);
-  color: var(--sdo-red-bright);
-  font-size: clamp(1.9rem, 5vw, 2.75rem);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  line-height: 1.05;
-}
-
-.sdo-masthead__program {
+.hero {
+  position: relative;
+  background:
+    radial-gradient(720px 420px at 82% -10%, rgba(255, 164, 38, 0.16), transparent 65%),
+    radial-gradient(640px 480px at 8% 30%, rgba(205, 12, 36, 0.20), transparent 60%),
+    linear-gradient(180deg, #0B131B 0%, #101C28 100%);
   color: #FFFFFF;
-  font-size: clamp(0.8rem, 2vw, 1.05rem);
-  font-weight: 600;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  border-top: 2px solid var(--sdo-gold);
-  padding-top: var(--space-xs);
+  overflow: hidden;
 }
 
-.sdo-masthead__tagline {
+.hero__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-lg) 0;
+}
+
+.hero__logo img {
+  height: 64px;
+  width: auto;
+  border-radius: 10px;
+  display: block;
+}
+
+.hero__extlink {
   color: #B9C6D0;
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.hero__extlink:hover { color: var(--sdo-gold); }
+
+.hero__content {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) calc(var(--space-xxl) + 56px);
+  text-align: center;
 }
 
-.sdo-masthead :focus-visible {
-  outline-color: var(--sdo-gold);
+.hero__overline {
+  color: var(--sdo-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.42em;
+  font-weight: 600;
+  font-size: clamp(0.78rem, 1.8vw, 0.95rem);
+  margin: var(--space-lg) 0 var(--space-md);
+}
+
+.hero__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 6vw, 3.9rem);
+  font-weight: 700;
+  line-height: 1.08;
+  margin: 0 0 var(--space-md);
+  letter-spacing: 0.01em;
+}
+
+.hero__accent {
+  background: var(--sdo-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__sub {
+  color: #B9C6D0;
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  max-width: 58ch;
+  margin: 0 auto var(--space-lg);
+}
+
+.hero__cta {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
+}
+
+.hero__btn {
+  background: var(--sdo-grad-btn);
+  font-size: var(--font-size-lg);
+  padding: var(--space-sm) var(--space-xl);
+  box-shadow: 0 6px 22px rgba(205, 12, 36, 0.35);
+}
+.hero__btn:hover {
+  background: var(--sdo-grad-btn);
+  filter: brightness(0.9);
+}
+
+.hero__btn--ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-sm);
+  color: #FFFFFF;
+  font-size: var(--font-size-lg);
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.hero__btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.hero__badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+  color: #8FA0AE;
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+.hero__badges span { display: inline-flex; align-items: center; gap: var(--space-sm); }
+.hero__badges span::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sdo-gold);
+}
+
+.hero :focus-visible { outline-color: var(--sdo-gold); }
+
+.hero__curve {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 56px;
+  display: block;
+}
+
+/* ------------------------------------------------------- section heads */
+
+.section-head { padding-top: var(--space-xl); margin-bottom: var(--space-lg); }
+
+.section-title {
+  font-size: var(--font-size-xl);
+  margin: 0 0 var(--space-xs);
+}
+.section-title::after {
+  content: "";
+  display: block;
+  width: 52px;
+  height: 3px;
+  margin-top: var(--space-sm);
+  background: var(--sdo-grad);
+  border-radius: 2px;
+}
+
+.section-sub {
+  color: var(--color-text-muted);
+  margin: var(--space-sm) 0 0;
+}
+
+/* ------------------------------------------------------------- gallery */
+
+.filter-chip.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.filter-chip:hover { border-color: var(--color-primary); }
+
+.search-input:focus-visible,
+.sort-select:focus-visible { outline-color: var(--color-primary); }
+
+.card { overflow: hidden; }
+.card:hover .card__title { color: var(--color-primary); }
+.card__title { transition: color 0.15s ease; }
+.card__thumb { background: var(--sdo-ink); }
+
+/* --------------------------------------------------------------- about */
+
+.about {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.about__inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xxl) var(--space-lg);
+}
+
+.about__lede {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  max-width: 70ch;
+  margin: var(--space-md) 0 var(--space-xl);
+}
+
+.about__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-lg);
+}
+
+.feature {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+.feature h3 {
+  font-size: var(--font-size-base);
+  margin: 0 0 var(--space-sm);
+}
+.feature h3::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 3px;
+  margin-bottom: var(--space-sm);
+  background: var(--sdo-gold);
+  border-radius: 2px;
+}
+.feature p {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* -------------------------------------------------------------- footer */
+
+.sdo-footer__logo {
+  height: 56px;
+  width: auto;
+  margin: 0 auto var(--space-md);
 }
 
 .sdo-footer__credit {

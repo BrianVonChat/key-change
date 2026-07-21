@@ -59,7 +59,21 @@ for (const entry of fs.readdirSync(brandDir)) {
   fs.cpSync(path.join(brandDir, entry), path.join(outDir, entry), { recursive: true });
 }
 
-// 4. De-brand the shared game pages: their <title> carries the platform name.
+// 4. Brand cover art: if the overlay shipped per-game art
+//    (assets/img/game-art/<slug>.svg), point games.json at it.
+const gamesJsonPath = path.join(outDir, 'games.json');
+const gamesIndex = JSON.parse(fs.readFileSync(gamesJsonPath, 'utf8'));
+let arted = 0;
+for (const g of gamesIndex) {
+  const artRel = `assets/img/game-art/${g.slug}.svg`;
+  if (fs.existsSync(path.join(outDir, artRel))) {
+    g.thumbnail = artRel;
+    arted += 1;
+  }
+}
+if (arted) fs.writeFileSync(gamesJsonPath, JSON.stringify(gamesIndex, null, 2) + '\n');
+
+// 5. De-brand the shared game pages: their <title> carries the platform name.
 let retitled = 0;
 for (const folder of fs.readdirSync(path.join(outDir, 'games'))) {
   const pagePath = path.join(outDir, 'games', folder, 'index.html');
@@ -72,4 +86,4 @@ for (const folder of fs.readdirSync(path.join(outDir, 'games'))) {
   }
 }
 
-console.log(`Built brand "${site.name}" -> ${path.relative(ROOT, outDir)}/ (retitled ${retitled} game page(s))`);
+console.log(`Built brand "${site.name}" -> ${path.relative(ROOT, outDir)}/ (retitled ${retitled} game page(s), ${arted} brand cover(s))`);

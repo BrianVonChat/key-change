@@ -13,15 +13,36 @@
   <link rel="stylesheet" href="brand.css">
 </head>
 <body>
-  <header class="site-header sdo-masthead">
-    <a class="sdo-masthead__wordmark" href="index.html">
-      <span class="sdo-masthead__org">San Diego Opera</span>
-      <span class="sdo-masthead__program">Outreach Program</span>
-    </a>
-    <p class="site-header__tagline sdo-masthead__tagline">Free music learning games for student musicians — note reading, rhythm, ear training, and theory</p>
+  <header class="hero">
+    <div class="hero__bar">
+      <a class="hero__logo" href="index.html">
+        <img src="assets/img/sdo-logo-header.png" alt="San Diego Opera" width="240" height="135">
+      </a>
+      <a class="hero__extlink" href="https://www.sdopera.org" rel="noopener">sdopera.org&nbsp;&#8599;</a>
+    </div>
+
+    <div class="hero__content">
+      <p class="hero__overline">Outreach Program</p>
+      <h1 class="hero__title">Every voice tells a story.<br><span class="hero__accent">Start yours by playing.</span></h1>
+      <p class="hero__sub">Free music-learning games for student musicians — note reading, rhythm, ear training, and theory, built around real recorded piano. No downloads, no accounts. Just play.</p>
+      <div class="hero__cta">
+        <a class="btn hero__btn" href="#games">Start playing</a>
+        <a class="hero__btn--ghost" href="#about">About the program</a>
+      </div>
+      <p class="hero__badges"><span>Free forever</span><span>Real piano recordings</span><span>Works on any device</span></p>
+    </div>
+
+    <svg class="hero__curve" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,80 L0,44 Q720,-36 1440,44 L1440,80 Z" fill="#F5F8FA"/>
+    </svg>
   </header>
 
-  <main class="gallery">
+  <main class="gallery" id="games">
+    <div class="section-head">
+      <h2 class="section-title">Start playing</h2>
+      <p class="section-sub">Pick a skill — search, filter by level, and go.</p>
+    </div>
+
     <section class="gallery__controls">
       <input
         type="search"
@@ -58,7 +79,29 @@
     </p>
   </main>
 
+  <section class="about" id="about">
+    <div class="about__inner">
+      <h2 class="section-title">About the program</h2>
+      <p class="about__lede">San Diego Opera's Outreach Program brings music fundamentals to student musicians across our community. These games turn practice into play — short rounds you can finish in minutes, built to be repeated until the skills stick.</p>
+      <div class="about__grid">
+        <div class="feature">
+          <h3>Real piano, really recorded</h3>
+          <p>Ear-training rounds use actual piano recordings — 36 chromatic notes and true harmonic context, not synth beeps.</p>
+        </div>
+        <div class="feature">
+          <h3>Grows with the student</h3>
+          <p>Short, repeatable rounds with levels that climb from first white-key finds and steady beats to full-key fluency and functional hearing.</p>
+        </div>
+        <div class="feature">
+          <h3>Open under the hood</h3>
+          <p>Built on Key Change, an open platform for community-made music games — so the library keeps growing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer class="site-footer sdo-footer">
+    <img class="sdo-footer__logo" src="assets/img/sdo-logo-white.png" alt="San Diego Opera" width="140" height="73">
     <p>The Outreach Program of <a href="https://www.sdopera.org" rel="noopener">San Diego Opera</a></p>
     <p class="sdo-footer__credit">Games powered by <a href="https://key-change.netlify.app" rel="noopener">Key Change</a></p>
   </footer>
