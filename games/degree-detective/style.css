@@ -14,8 +14,8 @@ html, body {
 }
 
 body {
-  background: var(--color-bg, #FFF8F0);
-  color: var(--color-text, #2B2420);
+  background: var(--color-bg, var(--color-bg));
+  color: var(--color-text, var(--color-text));
   font-family: var(--font-body, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
   font-size: 1rem;
   line-height: 1.5;
@@ -35,7 +35,7 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-secondary, #2E6E62);
+  outline: 3px solid var(--color-secondary, var(--color-secondary));
   outline-offset: 2px;
 }
 
@@ -50,7 +50,7 @@ button {
 .back-link {
   display: inline-block;
   margin: 1rem clamp(1rem, 4vw, 2rem);
-  color: var(--color-secondary, #2E6E62);
+  color: var(--color-secondary, var(--color-secondary));
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 600;
@@ -85,7 +85,7 @@ button {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 2rem;
-  background: var(--color-primary, #D9633B);
+  background: var(--color-primary, var(--color-primary));
   color: white;
   border: none;
   border-radius: var(--radius-sm, 6px);
@@ -103,12 +103,12 @@ button {
 }
 .btn--secondary {
   background: var(--color-surface, #FFFFFF);
-  color: var(--color-secondary, #2E6E62);
-  border: 1px solid var(--color-border, #EAD9C8);
+  color: var(--color-secondary, var(--color-secondary));
+  border: 1px solid var(--color-border, var(--color-border));
 }
 .btn--secondary:hover {
-  background: var(--color-bg, #FFF8F0);
-  color: var(--color-secondary-hover, #24564C);
+  background: var(--color-bg, var(--color-bg));
+  color: var(--color-secondary-hover, var(--color-secondary-hover));
 }
 
 /* ===== Start screen ===== */
@@ -117,12 +117,12 @@ button {
 }
 .title {
   font-size: clamp(2rem, 6vw, 2.75rem);
-  color: var(--color-text, #2B2420);
+  color: var(--color-text, var(--color-text));
 }
 .subtitle {
   max-width: 52ch;
   margin: 0;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 1.05rem;
 }
 
@@ -137,7 +137,7 @@ button {
   margin-bottom: 0.75rem;
   padding: 0;
   font-size: 0.95rem;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   text-align: center;
   width: 100%;
 }
@@ -155,21 +155,21 @@ button {
   min-width: 8.5rem;
   max-width: 18rem;
   padding: 0.85rem 1.25rem;
-  border: 2px solid var(--color-border, #EAD9C8);
+  border: 2px solid var(--color-border, var(--color-border));
   border-radius: var(--radius-md, 12px);
   background: var(--color-surface, #FFFFFF);
-  color: var(--color-text, #2B2420);
+  color: var(--color-text, var(--color-text));
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
 }
 .select-pill:hover {
-  border-color: var(--color-secondary, #2E6E62);
+  border-color: var(--color-secondary, var(--color-secondary));
 }
 .select-pill.is-active {
-  background: var(--color-secondary, #2E6E62);
-  border-color: var(--color-secondary, #2E6E62);
+  background: var(--color-secondary, var(--color-secondary));
+  border-color: var(--color-secondary, var(--color-secondary));
   color: white;
 }
 .select-pill__hint {
@@ -187,7 +187,7 @@ button {
 .best-preview {
   min-height: 1.5em;
   margin: 0;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 0.9rem;
 }
 
@@ -200,7 +200,7 @@ button {
   gap: 1rem;
   flex-wrap: wrap;
   background: var(--color-surface, #FFFFFF);
-  border: 1px solid var(--color-border, #EAD9C8);
+  border: 1px solid var(--color-border, var(--color-border));
   border-radius: var(--radius-md, 12px);
   padding: 0.75rem 1.25rem;
 }
@@ -214,13 +214,13 @@ button {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
 }
 .stat-value {
   font-size: 1.4rem;
   font-weight: 700;
   font-family: var(--font-heading, Georgia, serif);
-  color: var(--color-primary, #D9633B);
+  color: var(--color-primary, var(--color-primary));
 }
 .stat--progress {
   flex: 1 1 12rem;
@@ -233,15 +233,15 @@ button {
 .progress-track {
   width: 100%;
   height: 0.55rem;
-  background: var(--color-bg, #FFF8F0);
-  border: 1px solid var(--color-border, #EAD9C8);
+  background: var(--color-bg, var(--color-bg));
+  border: 1px solid var(--color-border, var(--color-border));
   border-radius: 999px;
   overflow: hidden;
 }
 .progress-fill {
   height: 100%;
   width: 0%;
-  background: var(--color-secondary, #2E6E62);
+  background: var(--color-secondary, var(--color-secondary));
   border-radius: 999px;
   transition: width 0.3s ease;
 }
@@ -262,7 +262,7 @@ button {
   align-items: center;
   gap: 0.1rem;
   background: var(--color-surface, #FFFFFF);
-  border: 1px solid var(--color-border, #EAD9C8);
+  border: 1px solid var(--color-border, var(--color-border));
   border-radius: var(--radius-md, 12px);
   padding: 0.55rem 1.6rem;
   margin-bottom: 0.25rem;
@@ -271,12 +271,12 @@ button {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
 }
 .key-card__value {
   font-family: var(--font-heading, Georgia, serif);
   font-size: 1.35rem;
-  color: var(--color-secondary, #2E6E62);
+  color: var(--color-secondary, var(--color-secondary));
 }
 
 .play-btn {
@@ -285,7 +285,7 @@ button {
   height: clamp(6.5rem, 20vw, 8.5rem);
   border-radius: 50%;
   border: none;
-  background: radial-gradient(circle at 35% 30%, var(--color-primary-hover, #C1512C), var(--color-primary, #D9633B));
+  background: radial-gradient(circle at 35% 30%, var(--color-primary-hover, #C1512C), var(--color-primary, var(--color-primary)));
   color: white;
   display: flex;
   align-items: center;
@@ -356,12 +356,12 @@ button {
 
 .play-hint {
   margin: 0;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 0.95rem;
 }
 .replay-counter {
   margin: 0;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 0.85rem;
 }
 .replay-counter[hidden] {
@@ -369,7 +369,7 @@ button {
 }
 .replay-counter span {
   font-weight: 700;
-  color: var(--color-text, #2B2420);
+  color: var(--color-text, var(--color-text));
 }
 
 /* ===== Degree answer grid — piano geometry =====
@@ -397,19 +397,19 @@ button {
   justify-content: center;
   gap: 0.1rem;
   padding: 0.5rem 0.15rem;
-  border: 2px solid var(--color-border, #EAD9C8);
+  border: 2px solid var(--color-border, var(--color-border));
   border-radius: var(--radius-md, 12px);
   background: var(--color-surface, #FFFFFF);
-  color: var(--color-text, #2B2420);
+  color: var(--color-text, var(--color-text));
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
   min-height: 3.5rem; /* 56px — comfortably above the 44px tap minimum */
   min-width: 0;
 }
 .degree-btn--chromatic {
-  background: var(--color-text, #2B2420);
-  border-color: var(--color-text, #2B2420);
-  color: var(--color-bg, #FFF8F0);
+  background: var(--color-text, var(--color-text));
+  border-color: var(--color-text, var(--color-text));
+  color: var(--color-bg, var(--color-bg));
   min-height: 3rem; /* 48px, slightly shorter, like a black key */
 }
 .degree-btn__label {
@@ -420,18 +420,18 @@ button {
 .degree-btn__solfege {
   font-size: 0.72rem;
   font-style: italic;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   line-height: 1;
 }
 .degree-btn--chromatic .degree-btn__solfege {
   color: rgba(255, 248, 240, 0.75);
 }
 .degree-btn:hover:not(:disabled) {
-  border-color: var(--color-secondary, #2E6E62);
+  border-color: var(--color-secondary, var(--color-secondary));
   transform: translateY(-1px);
 }
 .degree-btn--chromatic:hover:not(:disabled) {
-  border-color: var(--color-primary, #D9633B);
+  border-color: var(--color-primary, var(--color-primary));
 }
 .degree-btn:disabled {
   cursor: default;
@@ -440,13 +440,13 @@ button {
 
 .degree-btn.is-correct {
   background: #EAF4EA;
-  border-color: var(--color-beginner, #4C8C4F);
-  color: var(--color-beginner, #4C8C4F);
+  border-color: var(--color-beginner, var(--color-beginner));
+  color: var(--color-beginner, var(--color-beginner));
   opacity: 1;
   animation: flash-green 0.5s ease;
 }
 .degree-btn.is-correct .degree-btn__solfege {
-  color: var(--color-beginner, #4C8C4F);
+  color: var(--color-beginner, var(--color-beginner));
 }
 .degree-btn.is-incorrect {
   background: #FBE6DE;
@@ -460,13 +460,13 @@ button {
 }
 .degree-btn.is-reveal {
   background: #EAF4EA;
-  border-color: var(--color-beginner, #4C8C4F);
-  color: var(--color-beginner, #4C8C4F);
+  border-color: var(--color-beginner, var(--color-beginner));
+  color: var(--color-beginner, var(--color-beginner));
   opacity: 1;
   animation: pulse-reveal 0.7s ease 2;
 }
 .degree-btn.is-reveal .degree-btn__solfege {
-  color: var(--color-beginner, #4C8C4F);
+  color: var(--color-beginner, var(--color-beginner));
 }
 
 @keyframes flash-green {
@@ -484,7 +484,7 @@ button {
 
 .hotkey-legend {
   margin: -0.5rem 0 0;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 0.8rem;
 }
 
@@ -496,7 +496,7 @@ button {
   align-items: center;
   gap: 0.75rem;
   background: var(--color-surface, #FFFFFF);
-  border: 1px solid var(--color-border, #EAD9C8);
+  border: 1px solid var(--color-border, var(--color-border));
   border-radius: var(--radius-md, 12px);
   padding: 1rem;
 }
@@ -509,7 +509,7 @@ button {
   font-weight: 600;
 }
 .feedback-text.is-correct {
-  color: var(--color-beginner, #4C8C4F);
+  color: var(--color-beginner, var(--color-beginner));
 }
 .feedback-text.is-incorrect {
   color: var(--color-advanced, #C1512C);
@@ -524,11 +524,11 @@ button {
   font-size: 4rem;
   font-weight: 700;
   margin: -0.5rem 0 0;
-  color: var(--color-primary, #D9633B);
+  color: var(--color-primary, var(--color-primary));
   line-height: 1;
 }
 .banner-best {
-  background: linear-gradient(135deg, #B5790C, #D9A13B);
+  background: linear-gradient(135deg, var(--color-intermediate), #D9A13B);
   color: white;
   font-weight: 700;
   padding: 0.6rem 1.5rem;
@@ -557,7 +557,7 @@ button {
   align-items: center;
   gap: 0.2rem;
   background: var(--color-surface, #FFFFFF);
-  border: 1px solid var(--color-border, #EAD9C8);
+  border: 1px solid var(--color-border, var(--color-border));
   border-radius: var(--radius-md, 12px);
   padding: 1rem 0.5rem;
 }
@@ -565,17 +565,17 @@ button {
   font-size: 1.5rem;
   font-weight: 700;
   font-family: var(--font-heading, Georgia, serif);
-  color: var(--color-secondary, #2E6E62);
+  color: var(--color-secondary, var(--color-secondary));
 }
 .result-label {
   font-size: 0.8rem;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   text-align: center;
 }
 
 .results-best-line {
   margin: 0;
-  color: var(--color-text-muted, #6B5F56);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 0.95rem;
 }
 
