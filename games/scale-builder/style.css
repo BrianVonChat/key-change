@@ -300,14 +300,62 @@ button {
 
 /* ---- Scale rack (~15%, above keyboard) ---- */
 .rack {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: var(--space-xs);
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
   padding: var(--space-xs);
   min-height: 4.5rem;
 }
 
+.rack-caption {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-xs);
+}
+
+/* W/H step badges between rack slots — the visible W-W-H-W-W-W-H pattern.
+   The current step blinks and is the free hint button. */
+.step-link {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: default;
+}
+.step-link.is-done {
+  border-color: var(--sb-correct);
+  color: var(--sb-correct);
+  background: #EAF4EA;
+}
+/* The one live badge is a FILLED disc — unmistakable next to the outline
+   done/future badges even without motion or color vision — and it really
+   blinks (opacity), not just a size throb. */
+.step-link.is-current {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: #FFFFFF;
+  cursor: pointer;
+  animation: step-blink 1.2s ease-in-out infinite;
+}
+.step-link.is-current:hover {
+  filter: brightness(1.2);
+}
+@keyframes step-blink {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.6; }
+}
+
 .rack-slot {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -697,9 +745,30 @@ button {
     flex-basis: 100%;
     order: 10;
   }
+  /* Two rows of four slots on phones (badges keep a tappable 24px):
+     slot badge slot badge slot badge slot badge / slot badge ... slot */
   .rack {
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr) auto);
+    gap: 4px 2px;
+    padding: var(--space-xs) 0;
+  }
+  .rack-slot {
+    min-height: 3rem;
+  }
+  .rack-name {
+    font-size: 0.62rem;
+  }
+  .rack-degree {
+    font-size: 0.62rem;
+  }
+  .step-link {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.68rem;
+  }
+  .rack-caption {
+    font-size: 0.68rem;
   }
   .key-tag {
     font-size: 0.62rem;
@@ -711,5 +780,23 @@ button {
   .app {
     padding-left: 0;
     padding-right: 0;
+  }
+}
+
+/* Same convention as the sibling games: kill decorative motion, but keep
+   the information the animations carried as static styles. */
+@media (prefers-reduced-motion: reduce) {
+  .step-link.is-current,
+  .key-tag,
+  .rack-slot.is-filled,
+  .banner-best {
+    animation: none;
+  }
+  .key.is-hint {
+    animation: none;
+    box-shadow: inset 0 0 0 6px var(--color-secondary);
+  }
+  .key-ripple {
+    display: none;
   }
 }

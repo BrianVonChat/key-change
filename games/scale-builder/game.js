@@ -510,7 +510,45 @@
       slot.appendChild(degreeLabel);
       slot.appendChild(nameLabel);
       els.rack.appendChild(slot);
+
+      // W/H step badge between this degree and the next — the scale's
+      // whole/half pattern stays visible the entire round, and the badge
+      // for the step you're on doubles as a free hint button.
+      if (i < 7) {
+        const stepNum = i + 1; // step from degree i+1 to degree i+2
+        const label = STEP_LABELS[stepNum]; // 'Whole' | 'Half' to reach degree i+2
+        const step = document.createElement('button');
+        step.type = 'button';
+        step.className = 'step-link';
+        step.dataset.step = String(stepNum);
+        step.textContent = label === 'Half' ? 'H' : 'W';
+        step.setAttribute('aria-label',
+          `${label} step from note ${stepNum} to note ${stepNum + 1}. When blinking, click for a hint.`);
+        step.addEventListener('click', () => handleStepLinkClick(stepNum));
+        els.rack.appendChild(step);
+      }
     }
+    updateStepLinks();
+  }
+
+  // Reflect progress on the W/H badges: taken steps are done, the step in
+  // play blinks (and is the only clickable one), later steps wait dimmed.
+  function updateStepLinks() {
+    els.rack.querySelectorAll('.step-link').forEach((btn) => {
+      const stepNum = Number(btn.dataset.step);
+      btn.classList.toggle('is-done', state.currentDegree > stepNum);
+      btn.classList.toggle('is-current', state.currentDegree === stepNum);
+      btn.disabled = state.currentDegree !== stepNum;
+    });
+  }
+
+  function handleStepLinkClick(stepNum) {
+    // No inputLocked check: the badge enables the moment a note is placed,
+    // and pulsing the (already-advanced) target during the brief post-press
+    // lock is harmless — a blinking button must never swallow a click.
+    if (stepNum !== state.currentDegree || state.transitioning) return;
+    pulseHint();
+    showFeedback('Watch the flashing key!', '');
   }
 
   function fillRackSlot(degreeNum, displayName) {
@@ -606,6 +644,7 @@
       showFeedback(`${label} Step`, label === 'Half' ? 'is-half' : 'is-whole');
 
       ensureKeyboardMarks(true);
+      updateStepLinks();
 
       if (state.currentDegree >= 8) {
         state.transitioning = true;
