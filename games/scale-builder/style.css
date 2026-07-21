@@ -367,9 +367,13 @@ button {
 }
 
 .rack-name {
-  font-size: 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: var(--color-text-muted);
-  min-height: 0.9em;
+  min-height: 1em;
+}
+.rack-slot.is-filled .rack-name {
+  color: var(--color-text);
 }
 
 /* ---- Feedback strip ---- */
@@ -393,23 +397,22 @@ button {
   display: flex;
   align-items: center;
   flex: 1;
-  min-height: 11rem;
-  gap: var(--space-xs);
+  min-height: 12rem;
 }
 
-.keyboard-viewport {
+.keyboard-wrap {
   flex: 1;
+  padding: var(--space-sm) 0 var(--space-md);
+  /* Desktop: everything fits, no scrollbar. Narrow phones: keys stop
+     shrinking (JS floors their width) and this becomes finger-pannable. */
   overflow-x: auto;
-  overflow-y: hidden;
-  padding: var(--space-sm) var(--space-xs) var(--space-lg);
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
 .keyboard {
   position: relative;
-  height: clamp(9rem, 22vw, 13rem);
-  /* width is set dynamically by JS based on number of visible white keys */
+  height: clamp(10rem, 26vw, 15rem);
+  /* key positions/widths are computed by JS from the wrap's width */
 }
 
 /* Individual keys — absolutely positioned by JS via inline style (left/width) */
@@ -423,11 +426,14 @@ button {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: var(--space-sm);
-  font-size: 0.7rem;
+  padding-bottom: var(--space-xs);
+  font-size: 0.8rem;
   color: var(--color-text-muted);
   transition: background 0.08s ease;
   -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 .key--white {
   background: #FFFFFF;
@@ -435,7 +441,12 @@ button {
   height: 100%;
 }
 .key--white:hover {
-  background: #FBF3EA;
+  background: var(--color-bg);
+}
+/* Press feedback fires even while grading input is briefly locked,
+   so the keyboard never feels dead under the mouse. */
+.key--white:active {
+  background: var(--color-border);
 }
 .key--black {
   background: var(--sb-black-key);
@@ -445,7 +456,8 @@ button {
   border-radius: 0 0 4px 4px;
   border-color: #1c1714;
 }
-.key--black:hover {
+.key--black:hover,
+.key--black:active {
   background: var(--sb-black-key-active);
 }
 .key:focus-visible {
@@ -454,12 +466,12 @@ button {
   z-index: 3;
 }
 
-.key.is-tonic-lit {
-  box-shadow: inset 0 0 0 3px var(--sb-tonic);
+.key.is-placed {
+  box-shadow: inset 0 0 0 2px var(--sb-correct);
 }
 
-.key.is-next-degree {
-  box-shadow: inset 0 0 0 3px rgba(46, 110, 98, 0.35);
+.key.is-tonic-lit {
+  box-shadow: inset 0 0 0 3px var(--sb-tonic);
 }
 
 .key.is-correct {
@@ -485,67 +497,51 @@ button {
   100% { opacity: 0; transform: scale(1.8); }
 }
 
-.key-letter {
+/* Placement pill — appears on a key once its degree is correctly placed.
+   The keyboard itself shows the scale path; unplayed keys stay clean. */
+.key-tag {
   pointer-events: none;
-  font-weight: 700;
-}
-
-.octave-nav {
-  flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
+  display: inline-block;
+  padding: 2px 6px;
   border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  color: var(--color-secondary);
+  background: var(--sb-correct);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+  animation: tag-pop 0.3s ease;
 }
-.octave-nav:hover { border-color: var(--color-secondary); background: var(--color-bg); }
-.octave-nav:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
+.key-tag.is-tonic-tag {
+  background: var(--sb-tonic);
+}
+.key-tag.no-anim {
+  animation: none;
+}
+@keyframes tag-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-/* ---- Legend / bottom strip ---- */
-.legend-strip {
-  padding: var(--space-sm) 0 0;
+/* Earned hint — pulses the correct key after repeated misses. Deliberately
+   NOT gold: gold marks the tonic, so the hint speaks a different color. */
+.key.is-hint {
+  animation: hint-pulse 0.65s ease-in-out 2;
+}
+@keyframes hint-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 0 transparent; }
+  50% { box-shadow: inset 0 0 0 6px var(--color-secondary); }
+}
+
+/* Shown only on narrow portrait screens, where the keyboard pans */
+.rotate-hint {
+  display: none;
   text-align: center;
-}
-.legend-title {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--color-text-muted);
-  margin: 0 0 var(--space-xs);
+  margin: 0;
 }
-.legend-row {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-}
-.legend-key {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px var(--space-sm);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 0.75rem;
-}
-.legend-key .legend-letter {
-  font-weight: 700;
-  background: var(--color-bg);
-  border-radius: 3px;
-  padding: 0 4px;
-  font-family: monospace;
-}
-.legend-key.is-black .legend-letter {
-  background: var(--sb-black-key);
-  color: white;
+@media (max-width: 560px) and (orientation: portrait) {
+  .rotate-hint { display: block; }
 }
 
 /* ================================================================
@@ -573,6 +569,14 @@ button {
 @keyframes banner-in {
   0% { transform: translateY(-8px) scale(0.9); opacity: 0; }
   100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.grade-caption {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: calc(-1 * var(--space-sm)) 0 0;
 }
 
 .grade-badge {
@@ -697,8 +701,9 @@ button {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, 1fr);
   }
-  .legend-key {
-    font-size: 0.7rem;
+  .key-tag {
+    font-size: 0.62rem;
+    padding: 1px 3px;
   }
 }
 

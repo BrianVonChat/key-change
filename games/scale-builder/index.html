@@ -16,7 +16,7 @@
     <!-- START SCREEN -->
     <section class="screen screen--start" id="start-screen">
       <h1 class="title">Scale Builder</h1>
-      <p class="subtitle">Build the major scale for the given key by clicking the correct next note. Every major scale follows the same Whole&ndash;Whole&ndash;Half&ndash;Whole&ndash;Whole&ndash;Whole&ndash;Half pattern &mdash; internalize it by doing, not memorizing.</p>
+      <p class="subtitle">Your starting note is lit up gold &mdash; click your way up the piano to build the major scale. Whole step, whole step, half step&hellip; every major scale climbs the same pattern, and your fingers will learn it by playing.</p>
 
       <div class="start-preview" aria-hidden="true">
         <svg viewBox="0 0 220 70" class="preview-svg">
@@ -39,7 +39,7 @@
         <div class="difficulty-options">
           <button type="button" class="difficulty-option is-active" data-difficulty="easy" aria-pressed="true">
             <span class="difficulty-name">Easy</span>
-            <span class="difficulty-detail">Natural keys &middot; C, G, D, F</span>
+            <span class="difficulty-detail">Start here &middot; C, G, D, F</span>
           </button>
           <button type="button" class="difficulty-option" data-difficulty="medium" aria-pressed="false">
             <span class="difficulty-name">Medium</span>
@@ -47,7 +47,7 @@
           </button>
           <button type="button" class="difficulty-option" data-difficulty="hard" aria-pressed="false">
             <span class="difficulty-name">Hard</span>
-            <span class="difficulty-detail">Full 12-key set, heavy accidentals</span>
+            <span class="difficulty-detail">All 12 major keys &middot; sharps &amp; flats</span>
           </button>
         </div>
       </fieldset>
@@ -93,29 +93,24 @@
       <!-- FEEDBACK STRIP -->
       <p class="feedback-strip" id="feedback-strip" aria-live="polite"></p>
 
-      <!-- KEYBOARD REGION (~50%) -->
+      <!-- KEYBOARD REGION (~50%) — one fixed two-octave piano, C4 to C6.
+           Every scale fits inside it; nothing scrolls or shifts. -->
       <div class="keyboard-region">
-        <button type="button" class="octave-nav octave-nav--left" id="octave-left" aria-label="Shift keyboard view left">&#10094;</button>
-        <div class="keyboard-viewport" id="keyboard-viewport">
+        <div class="keyboard-wrap" id="keyboard-wrap">
           <div class="keyboard" id="keyboard"></div>
         </div>
-        <button type="button" class="octave-nav octave-nav--right" id="octave-right" aria-label="Shift keyboard view right">&#10095;</button>
       </div>
-
-      <!-- LEGEND / BOTTOM STRIP -->
-      <div class="legend-strip">
-        <p class="legend-title">Computer keyboard mapping (shifts with the visible octave):</p>
-        <div class="legend-row" id="legend-row"></div>
-      </div>
+      <p class="rotate-hint">Tip: turn your device sideways for bigger piano keys.</p>
 
     </section>
 
     <!-- RESULTS SCREEN -->
     <section class="screen screen--results" id="results-screen" hidden>
-      <h2 class="results-heading">Session Complete!</h2>
+      <h2 class="results-heading">Great practicing!</h2>
       <div class="banner-best" id="banner-best" hidden>&#9733; New Best! &#9733;</div>
 
       <div class="grade-badge" id="grade-badge">S</div>
+      <p class="grade-caption">Your rank</p>
 
       <div class="results-grid">
         <div class="result-stat">
